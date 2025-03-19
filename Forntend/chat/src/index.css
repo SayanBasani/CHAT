@@ -1,0 +1,23 @@
+@import "tailwindcss";
+html.dark body {
+  background-color: rgb(30, 43, 62);
+  color: white;
+}
+html.dark .darkTopNav {
+  background-color: rgb(12, 10, 36) ;
+  color: white;
+}
+.darkTopNav{
+  background-color: rgb(237, 239, 240);
+  color: black;
+}
+html.dark .darkExtraPage {
+  background-color: rgb(12, 10, 36) ;
+  color: white;
+}
+.a{
+  border: 1px solid white;
+}
+.b{
+  border: 1px solid rgb(0, 0, 0);
+}
