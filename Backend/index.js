@@ -63,6 +63,7 @@ app.post('/loginUser/',async(req,res)=>{
 
     if (user) {
       res.cookie("user",user)
+      
       res.json({ 
         message: "Login successful!",
         "login":true, 
