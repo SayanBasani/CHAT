@@ -1,9 +1,31 @@
+import { useContext } from "react";
 import TopNav from "../../src/Components/Navs/TopNav"
+import { SocketContext } from "../Storage/Sockets";
 export default function Home() {
+  const {Socket}=useContext(SocketContext);
+  
+  const handleGetUserList = ()=>{
+    if (Socket){
+      Socket.emit("all_user")
+    }else {
+      console.log("Socket is not connected");
+    }
+  }
+  const handleGetIdList = ()=>{
+    if (Socket){
+      Socket.emit("all_user_id")
+    }else {
+      console.log("Socket is not connected");
+    }
+  }
   return <>
   <div className="">
     <TopNav/>
     Hello
+    <div className="flex justify-center gap-3">
+      <button onClick={handleGetUserList} className="border px-3 py-2 text-xl get_all_user_list">user list</button>
+      <button onClick={handleGetIdList} className="border px-3 py-2 text-xl get_all_user_list_id">user list of id</button>
+    </div>
   </div>
   </>
 }

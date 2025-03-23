@@ -1,10 +1,17 @@
+import { useContext } from "react";
 import {Link, NavLink} from "react-router-dom"
+import { AllStorage } from "../../../Storage/StorageProvider";
+import { LogOut } from "../../../Storage/Account";
 export default function ChatNavDropdown() {
+  const { userData } = useContext(AllStorage);
   return (
     <div className="darkExtraPage border grid w-[200px] py-3 px-5 rounded-lg transition duration-500 ease-linear">
-      <NavLink to={"/Login"} className="p-2 flex justify-center rounded-md w-full hover:bg-gray-400 hover:text-black">
-        Login/Signup
-      </NavLink>
+      {
+      !userData ?
+      <NavLink to={"/Login"} className="p-2 flex justify-center rounded-md w-full hover:bg-gray-400 hover:text-black">Login/Signup</NavLink>
+      :
+      ""
+      }
       <NavLink to="/Home" className="p-2 flex justify-center rounded-md w-full hover:bg-gray-200  hover:text-black">
         Home
       </NavLink>
@@ -23,6 +30,12 @@ export default function ChatNavDropdown() {
       <NavLink to="/Help" className="p-2 flex justify-center rounded-md w-full hover:bg-gray-200  hover:text-black">
         Help
       </NavLink>
+      {
+        userData?
+        <div className="p-2 flex justify-center rounded-md w-full hover:bg-gray-400 hover:text-black"><LogOut/></div>
+        :
+        ""
+      }
     </div>
   );
 }

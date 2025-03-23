@@ -14,7 +14,7 @@ export default function DarkToggle() {
     }
   };
   return (
-    <div className="darkTopNav text-gray-900 dark:text-white">
+    <div className="darkDarkTogelBtn text-gray-900 dark:text-white">
       <button className="" onClick={toggleDarkMode}>
         <i className="darkButtonToggelLogo bi bi-moon-stars-fill"></i>
       </button>

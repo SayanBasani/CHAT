@@ -8,6 +8,10 @@ export const User = sequelize.define("User", {
     autoIncrement: true,
     primaryKey: true,
   },
+  user_id:{
+    type:DataTypes.UUID,
+    defaultValue:DataTypes.UUIDV4,
+  },
   user_name : {
     type : DataTypes.STRING,
     allowNull : false,
@@ -26,3 +30,63 @@ export const User = sequelize.define("User", {
     allowNull : false,
   }
 });
+
+export const Message = sequelize.define("Message",{
+  uid:{
+    type:DataTypes.INTEGER,
+    autoIncrement:true,
+    primaryKey:true,
+  },
+  sender_id:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
+  receiver_id:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  send_time:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  receive_time:{
+    type:DataTypes.STRING,
+  },
+  seen_time:{
+    type:DataTypes.STRING,
+  },
+  message:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  is_read:{
+    type:DataTypes.BOOLEAN,
+    defaultValue:false
+  },
+  deleted:{
+    type:DataTypes.BOOLEAN,
+    defaultValue:false,
+  }
+})
+
+export const Contact = sequelize.define("Contact",{
+  uid:{
+    type:DataTypes.INTEGER,
+    autoIncrement:true,
+    primaryKey:true
+  },
+  user_id:{
+    type:DataTypes.STRING,
+    allowNull:true,
+  },
+  ContactName:{
+    type:DataTypes.STRING,
+  },
+  phoneNumber:{
+    type:DataTypes.STRING,
+    allowNull:false,
+  },
+  ContactEmail:{
+    type:DataTypes.STRING
+  }
+})

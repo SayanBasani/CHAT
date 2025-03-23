@@ -7,6 +7,14 @@ html.dark .darkTopNav {
   background-color: rgb(12, 10, 36) ;
   color: white;
 }
+html.dark .darkDarkTogelBtn {
+  /* background-color: rgb(12, 10, 36) ; */
+  color: white;
+}
+.darkDarkTogelBtn {
+  /* background-color: rgb(12, 10, 36) ; */
+  color: rgb(8, 8, 8);
+}
 .darkTopNav{
   background-color: rgb(237, 239, 240);
   color: black;
@@ -20,4 +28,8 @@ html.dark .darkExtraPage {
 }
 .b{
   border: 1px solid rgb(0, 0, 0);
+}
+
+.c *{
+  border: 1px solid black;
 }

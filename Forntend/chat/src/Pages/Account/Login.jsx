@@ -6,25 +6,25 @@ import { AllStorage } from "../../Storage/StorageProvider";
 import { loginUser } from "../../Storage/Account";
 
 export default function Login(params) {
-  // localStorage.clear();
+  console.log('from login --> ', localStorage.getItem('user'));
+  
   const navigate = useNavigate();
   const { register,handleSubmit,formState:{error}} = useForm();
-  // const [loginUser] = useContext(AllStorage);
+  // const { userData, setuserData,chatSidebarOptions } = useContext(AllStorage);
+  const {userData, setuserData,chatSidebarOptions} = useContext(AllStorage);
   const onSubmit = async(data)=>{
-    console.log(data);
     const response = await loginUser(data)
     
     if (response.error) {
       alert (response.error);
-    } else {
-
+    } else {      
       if(response.login){
-        console.log(response.user);
+        setuserData(response.user);
         localStorage.setItem('user',JSON.stringify(response.user));
-        
-        // navigate('/Home');
+        navigate('/Home');
       }else{
         alert('Try With Correct Credincils!');
+        localStorage.setItem('user', JSON.stringify({}))
       }
     }
     

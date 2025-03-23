@@ -3,7 +3,7 @@ import DarkToggle from "../../Buttons/DarkToggle";
 import { AllStorage } from "../../../Storage/StorageProvider";
 import { NavLink } from "react-router-dom"
 export default function ChatSideNav() {
-  const [chatSidebarOptions] = useContext(AllStorage);
+  const {chatSidebarOptions} = useContext(AllStorage);
   console.log(chatSidebarOptions);
 
   return (
