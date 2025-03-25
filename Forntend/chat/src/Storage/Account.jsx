@@ -115,3 +115,23 @@ export const addContect = async (data) => {
     return { error: "Failed to connect to the server" };
   }
 }
+
+export const getAllContect =async (data)=>{
+  try {
+    const response = await fetch(API_BASE_URL+"getAllContect/",{
+      method: "POST",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+    const responseData = await response.json();
+    if(!response.ok){
+      console.error("Error response from server:", responseData);
+      return { error: responseData.error || "Something went wrong" };
+    }
+    return responseData
+  } catch (error) {
+    console.log("error is ->",error);
+    return {message:"somthing Woring"}
+  }
+}

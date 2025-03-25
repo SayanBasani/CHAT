@@ -6,13 +6,15 @@ export default function Add_new_Contect_form(params) {
   const { handleSubmit, register, formState: { errors }, } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data);
-    console.log("add a contect btn");
+
     const response = await addContect(data);
 
     console.log("Response data:", response);
     if(response.contectCreated){
       console.log("contect is created");
+    }
+    if(response.message){
+      alert(response.message)
     }
   }
   return (<>

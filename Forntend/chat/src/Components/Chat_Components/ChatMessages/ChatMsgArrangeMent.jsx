@@ -5,7 +5,7 @@ import { SocketContext } from "../../../Storage/Sockets";
 
 export default function ChatMsgArrangeMent(params) {
   const { messages,Socket } = useContext(SocketContext);
- Socket.emit("send_message")
+//  Socket.emit("send_message")
   return (<>
     <div>
       {

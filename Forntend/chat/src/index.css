@@ -23,13 +23,16 @@ html.dark .darkExtraPage {
   background-color: rgb(12, 10, 36) ;
   color: white;
 }
-.a{
+.chatSubNav{
+  background: #ece9e9;
   border: 1px solid white;
 }
-.b{
+html.dark .chatSubNav{
+  background: #130c28;
   border: 1px solid rgb(0, 0, 0);
 }
 
+
 .c *{
-  border: 1px solid black;
+  border: 1px solid rgb(255, 250, 250);
 }

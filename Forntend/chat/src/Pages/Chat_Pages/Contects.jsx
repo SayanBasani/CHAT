@@ -4,8 +4,10 @@ import All_Contect_Preview from "../../Components/Contect_components/All_Contect
 
 export default function Contects(params) {
   return (<>
-    <div className="Contects">
-      <All_Contect_Preview/>
+    <div className="grid Contects h-full">
+      <div className="flex flex-col overflow-auto">
+        <All_Contect_Preview />
+      </div>
       <div className="z-20 darkExtraPage absolute bottom-5 right-5 text-2xl border rounded-full w-9 h-9 flex items-center justify-center">
         <Add_New_Contect_Button />
       </div>

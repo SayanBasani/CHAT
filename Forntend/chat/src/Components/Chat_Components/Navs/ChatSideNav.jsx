@@ -4,12 +4,12 @@ import { AllStorage } from "../../../Storage/StorageProvider";
 import { NavLink } from "react-router-dom"
 export default function ChatSideNav() {
   const {chatSidebarOptions} = useContext(AllStorage);
-  console.log(chatSidebarOptions);
+  // console.log(chatSidebarOptions);
 
   return (
     <>
       <div className="z-10 pt-18 ChatSideNav h-screen w-14 darkTopNav flex flex-col gap-3 p-4 overflow-hidden">
-        <NavLink to={'/chat'} className={({isActive}) =>
+        <NavLink to={'/chat/'} className={({isActive}) =>
           `${isActive ? "text-blue-500" : ""} flex gap-4 items-center`}>
           <i className="bi bi-chat text-2xl"></i>
           <span className="text-x font-semibold">Chat</span>

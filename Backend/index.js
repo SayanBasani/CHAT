@@ -6,7 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import { InitializeSocket } from "./sockets.js";
-import { checkUserIsLoginANDValid } from "./middleware.js";
+import { checkIsUser, checkUserIsLoginANDValid } from "./middleware.js";
 import FORNTEND_BASE_URL from "./config.js";
 
 async () => {
@@ -30,7 +30,11 @@ app.use(
 );
 app.use(cookieParser());
 const port = 3001;
-app.use(["/addContect", "/logOutUser/"], checkUserIsLoginANDValid);
+app.use(
+  ["/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/"],
+  checkUserIsLoginANDValid
+);
+app.use(["/getUserData/"], checkIsUser);
 const server = http.createServer(app);
 InitializeSocket(server);
 
@@ -60,7 +64,7 @@ app.get("/", async (req, res) => {
 
 app.post("/create/", async (req, res) => {
   console.log(req.body);
-  console.log("-------------------");
+  console.log("create-------------------");
   try {
     const user = await User.create(req.body);
     console.log("...............");
@@ -73,11 +77,12 @@ app.post("/create/", async (req, res) => {
       user_ph_no: user.user_ph_no,
     });
     console.log("...............!");
+    console.log("create-------------------!");
   } catch (error) {
     console.log(error.errors[0].message);
     res.send({
       "error message": error.errors[0].message,
-      // 'error':error
+      // 'error':erro
     });
   }
 });
@@ -173,8 +178,27 @@ app.post("/addContect/", async (req, res) => {
   }
   try {
     if (req.isUser) {
-      const newContect = await Contact.create(req.body);
-      console.log(req.body);
+      const isExist = await Contact.findAndCountAll(
+        {
+          where:{
+            user_id: req.isUser.user_id,
+            phoneNumber: req.body.phoneNumber
+          }
+        }
+      )
+
+      if(isExist.count>0){
+        console.log("the count is ->",isExist.count);
+        
+        return res.send({message:"Already exists",error:"Already exists"})
+      }
+      let createContectcred = {
+        user_id: req.isUser.user_id,
+        ContactName: req.body.ContactName,
+        phoneNumber: req.body.phoneNumber,
+        ContactEmail: req.body.ContactEmail,
+      };
+      const newContect = await Contact.create(createContectcred);
       res.send({
         Contect: {
           ContactName: newContect.ContactName,
@@ -198,6 +222,72 @@ app.post("/addContect/", async (req, res) => {
       contectCreated: false,
     });
   }
+});
+
+app.post("/getAllContect/", async (req, res) => {
+  console.log("getAllContect --------------------------------");
+
+  try {
+    if (req.isUser) {
+      const response = await Contact.findAll({
+        where: {
+          user_id: req.isUser.user_id,
+          Deleted: false,
+        },
+        attributes: {
+          exclude: ["Deleted", "user_id", "uid", "createdAt", "updatedAt"],
+        },
+      });
+      console.log(response);
+      // const sendableData = response.filter
+      res.send({ message: "it is a valied user", allContecet: response });
+    } else {
+      res.send({ message: "somthing problem,Login" });
+    }
+  } catch (error) {
+    console.log("err is ->", error);
+    res.send(error);
+  }
+  console.log("getAllContect --------------------------------!");
+});
+
+app.post("/getUserData/", async (req, res) => {
+  console.log("getUserData------------------");
+  try {
+    const { phoneNumber } = req.body;
+    if (phoneNumber || req.isUser) {
+      console.log(`required data are ${phoneNumber}`);
+
+      const userData = await Contact.findOne({
+        where: { phoneNumber },
+      });
+
+      if (req.messageAble) {
+        console.log("final data !!!!!!!!!!!!!!!!!!!!!!!");
+        const { user_id, user_ph_no, user_name } = req.messageAble;
+        const aboutContact = {
+          user_id,
+          user_ph_no,
+          user_name,
+          isActiveUser:true
+        };
+        console.log(aboutContact);
+
+        console.log("send");
+        res.send(aboutContact);
+      } else {
+        console.log({ message: "Invite For Connect!" });
+
+        res.send({
+          message: "Invite For Connect!",
+          isActiveUser:false
+        });
+      }
+    }
+  } catch (error) {
+    res.send(error);
+  }
+  console.log("getUserData------------------!");
 });
 
 server.listen(port, () => {

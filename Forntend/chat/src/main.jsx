@@ -17,7 +17,8 @@ const rout = createBrowserRouter([
     path: '/',
     element: <ChatDashboard />,
     children: [
-      { path: "/Chat", element: <Chat /> },
+      { path: "/Chat/:phoneNumber", element: <Chat /> },
+      { path: "/Chat/", element: <Chat /> },
       { path: "/Contects", element: <Contects /> },
       { path: "/Calls", element: <Calls /> },
       { path: "/Setting", element: <Setting /> },
@@ -39,14 +40,7 @@ const rout = createBrowserRouter([
     path: '/Singup',
     element: <Singup />
   },
-  // {
-  //   path:'/Chat',
-  //   element: <ChatDashboard/>
-  // },
-  {
-    path: '/Chat',
-    element: <Chat />
-  },
+  
 ])
 
 createRoot(document.getElementById('root')).render(

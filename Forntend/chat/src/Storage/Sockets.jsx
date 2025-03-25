@@ -78,6 +78,39 @@ export default function SocketProvider({ children }) {
       "is_read": true,
       "deleted": false
     },
+    {
+      "id": 4,
+      "sender_id": 102,
+      "receiver_id": 101,
+      "send_time": "2025-03-22 10:00:30",
+      "receive_time": "2025-03-22 10:00:32",
+      "seen_time": "2025-03-22 10:00:35",
+      "message": "I can relate! So much work these days.",
+      "is_read": true,
+      "deleted": false
+    },
+    {
+      "id": 4,
+      "sender_id": 102,
+      "receiver_id": 101,
+      "send_time": "2025-03-22 10:00:30",
+      "receive_time": "2025-03-22 10:00:32",
+      "seen_time": "2025-03-22 10:00:35",
+      "message": "I can relate! So much work these days.",
+      "is_read": true,
+      "deleted": false
+    },
+    {
+      "id": 4,
+      "sender_id": 102,
+      "receiver_id": 101,
+      "send_time": "2025-03-22 10:00:30",
+      "receive_time": "2025-03-22 10:00:32",
+      "seen_time": "2025-03-22 10:00:35",
+      "message": "I can relate! So much work these days.",
+      "is_read": true,
+      "deleted": false
+    },
     
     
   ]

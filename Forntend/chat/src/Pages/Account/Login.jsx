@@ -21,7 +21,7 @@ export default function Login(params) {
       if(response.login){
         setuserData(response.user);
         localStorage.setItem('user',JSON.stringify(response.user));
-        navigate('/Home');
+        navigate('/');
       }else{
         alert('Try With Correct Credincils!');
         localStorage.setItem('user', JSON.stringify({}))

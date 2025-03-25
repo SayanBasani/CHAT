@@ -1,4 +1,4 @@
-import { Link, Navigate, Route, Routes, useNavigate } from "react-router-dom"
+import { Link, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom"
 import ChatSideNav from "../../Components/Chat_Components/Navs/ChatSideNav"
 import ChatTopNavs from "../../Components/Chat_Components/Navs/ChatTopNavs"
 import Chat from "./Chat"
@@ -10,7 +10,9 @@ import { AllStorage } from "../../Storage/StorageProvider"
 import TopNav from "../../Components/Navs/TopNav"
 export default function ChatDashboard(params) {
   const navigate = useNavigate();
-  const { userData } = useContext(AllStorage)
+  const { userData } = useContext(AllStorage);
+  const { phoneNumber } = useParams();
+  
   if (userData) {
     return (
       <>
@@ -20,7 +22,12 @@ export default function ChatDashboard(params) {
           <div className="z-0 absolute top-0 left-0 right-0 bottom-0 mt-14 ml-14 flex">
             <div className="w-full h-full">
               <Routes>
-                <Route path="/Chat/" element={<Chat />} />
+                {
+                  phoneNumber?
+                  <Route path="/Chat/:phNumber" element={<Chat />} />
+                  :
+                  <Route path="/Chat/" element={<Chat />} />
+                }
                 <Route path="/Contects/" element={<Contects />} />
                 <Route path="/Calls/" element={<Calls />} />
                 <Route path="/Setting/" element={<Setting />} />

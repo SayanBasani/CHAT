@@ -10,8 +10,11 @@ export default function Singup(params) {
     console.log(data);
     const response = await createUser(data);
     console.log(response);
+    console.log(response['error message']);
     
-    if(response.error){
+    if(response['error message']){
+      alert (response['error message']);
+    }else if(response.error){
       alert (response.error);
     }else{
       alert("successfully account is created");
