@@ -3,9 +3,18 @@ import { getAllContect } from "./Account";
 export const AllStorage = createContext();
 
 export default function StorageProvider({ children }) {
+  function getCookie(name) {
+    return document.cookie
+      .split("; ")
+      .find(row => row.startsWith(name + "="))
+      ?.split("=")[1] || null;
+  }
   const [userData, setuserData] = useState(() => {
-    const isUser = localStorage.getItem('user');
-    return isUser ? JSON.parse(isUser) : null;
+    // const userLoginCr = localStorage.getItem('user');
+    const  isUser = JSON.parse(decodeURIComponent(getCookie('userLoginCr')));
+    // console.log("isUser-->",isUser);
+    
+    return isUser ? isUser : null;
   });
   const [allContectS, setallContectS] = useState(null);
 

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import API_BASE_URL from "../config";
 import { useContext } from "react";
 import { AllStorage } from "./StorageProvider";
+import { io } from "socket.io-client";
 
 export const createUser = async (data) => {
   console.log("Sending user data:", data);
@@ -55,7 +56,6 @@ export const loginUser = async (data) => {
   }
 }
 
-
 export function LogOut() {
   const { userData, setuserData, chatSidebarOptions } = useContext(AllStorage);
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ export function LogOut() {
 export const addContect = async (data) => {
   const { ContactEmail, ContactName, phoneNumber } = data;
   console.log(`${ContactEmail} --- ${ContactName} --- ${phoneNumber}`);
-  if(!ContactName || !phoneNumber){
+  if (!ContactName || !phoneNumber) {
     return { error: "All fields are required" };
   }
   try {
@@ -116,22 +116,22 @@ export const addContect = async (data) => {
   }
 }
 
-export const getAllContect =async (data)=>{
+export const getAllContect = async (data) => {
   try {
-    const response = await fetch(API_BASE_URL+"getAllContect/",{
+    const response = await fetch(API_BASE_URL + "getAllContect/", {
       method: "POST",
       credentials: 'include',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
     const responseData = await response.json();
-    if(!response.ok){
+    if (!response.ok) {
       console.error("Error response from server:", responseData);
       return { error: responseData.error || "Something went wrong" };
     }
     return responseData
   } catch (error) {
-    console.log("error is ->",error);
-    return {message:"somthing Woring"}
+    console.log("error is ->", error);
+    return { message: "somthing Woring" }
   }
 }

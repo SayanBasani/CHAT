@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ChatMsgArrangeMent from "../../Components/Chat_Components/ChatMessages/ChatMsgArrangeMent";
 import ChatMessagesBox from "../../Components/Chat_Components/ChatMessagesBox";
 import { useParams } from "react-router-dom";
-import { getContactData } from "../../Storage/ApiRequest";
+import { getAllMessagesBW_S_R, getContactData } from "../../Storage/ApiRequest";
+import { SocketContext } from "../../Storage/Sockets";
 export default function Chat(params) {
+  const {messages, setmessages} = useContext(SocketContext);
   const { phoneNumber } = useParams();
   const [chatingWith, setchatingWith] = useState(false);
   const [isActiveUser, setisActiveUser] = useState(false);
 
   useEffect(() => {
+    console.log("ph is --->", phoneNumber);
     const fetchContactData = async () => {
       if (!phoneNumber) {
-        console.log("No phone number provided");
+        // console.log("No phone number provided for chat");
         return;
       }
 
@@ -22,6 +25,12 @@ export default function Chat(params) {
         }
         setisActiveUser(response.isActiveUser);
         setchatingWith(response);
+
+        const responseMsg = await getAllMessagesBW_S_R({ phoneNumber });
+        if (!responseMsg) {
+          console.error("Somthing Wrong");
+        }
+        setmessages(responseMsg.AllMessage);
       } catch (err) {
         console.error("Error fetching contact data:", err);
       }
@@ -29,10 +38,10 @@ export default function Chat(params) {
 
     fetchContactData();
   }, [phoneNumber]);
- 
+
 
   return (<>
-    <main className="grid grid-rows-[50px_1fr_50px] h-full">
+    <main className="grid grid-rows-[50px_1fr_55px] h-full">
       {
         (isActiveUser && phoneNumber) ?
           (

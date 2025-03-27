@@ -13,7 +13,7 @@ export default function Chat_recive({items,sender_name,message}) {
             <div className="flex justify-center items-center rounded-full w-8 h-8">
               <i className="bi bi-person-circle text-2xl flex justify-center items-center"></i>
             </div>
-            <div className="flex flex-col gap-1 w-full max-w-[320px]">
+            <div className="flex flex-col gap-1 w-full max-w-[320px] max-md:max-w-[250px]  max-sm:max-w-[220px]">
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <span className="text-sm font-semibold ">
                   {sender_name}

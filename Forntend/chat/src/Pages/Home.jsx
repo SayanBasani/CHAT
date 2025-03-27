@@ -2,18 +2,18 @@ import { useContext } from "react";
 import TopNav from "../../src/Components/Navs/TopNav"
 import { SocketContext } from "../Storage/Sockets";
 export default function Home() {
-  const {Socket}=useContext(SocketContext);
+  const {socket}=useContext(SocketContext);
   
   const handleGetUserList = ()=>{
-    if (Socket){
-      Socket.emit("all_user")
+    if (socket){
+      socket.emit("all_user")
     }else {
       console.log("Socket is not connected");
     }
   }
   const handleGetIdList = ()=>{
-    if (Socket){
-      Socket.emit("all_user_id")
+    if (socket){
+      socket.emit("all_user_id")
     }else {
       console.log("Socket is not connected");
     }

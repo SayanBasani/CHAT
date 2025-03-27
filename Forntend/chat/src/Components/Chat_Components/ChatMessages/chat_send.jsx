@@ -6,7 +6,7 @@ export default function Chat_send({ message }) {
         <div className="justify-end flex">
           <div className="flex items-start gap-2.5">
 
-            <div className="flex flex-col gap-1 w-full max-w-[320px]">
+            <div className="flex flex-col gap-1 w-full min-md:max-w-[320px] max-md:max-w-[250px]  max-sm:max-w-[220px]">
               <div className="flex items-center space-x-2 rtl:space-x-reverse justify-end">
                 <span className="text-sm font-normal ">{message.send_time}</span>
                 <span className="text-sm font-semibold">You</span>

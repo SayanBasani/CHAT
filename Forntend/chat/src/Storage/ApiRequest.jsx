@@ -15,3 +15,23 @@ export const getContactData = async (data) => {
   }
 
 };
+
+export const getAllMessagesBW_S_R = async(data) => {
+  try {
+    if (!data) {
+      return { message: "No data" }
+    }
+    const response = await fetch(`${API_BASE_URL}chats/`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+    const responseData = await response.json();
+    // console.log(response);
+    if(!response.ok){return {message:"Somthing Wrong!"}}
+    return responseData;
+  } catch (error) {
+    return error;
+  }
+}

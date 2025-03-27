@@ -31,6 +31,34 @@ html.dark .chatSubNav{
   background: #130c28;
   border: 1px solid rgb(0, 0, 0);
 }
+/* for style and scroll of the tetarea field  */
+
+/* Disable resizing of the textarea */
+.custom-textarea {
+  resize: none; /* Disable manual resizing */
+  overflow-y: auto; /* Ensure scrollbar appears only when necessary */
+  max-height: 40px; /* Set a minimum height for the textarea */
+  line-height: 20px;
+  height: 70%;
+}
+
+/* Slim scrollbar styles */
+.custom-textarea::-webkit-scrollbar {
+  width: 2px; /* Set the width of the scrollbar */
+}
+
+.custom-textarea::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar color */
+  border-radius: 10px;
+}
+
+.custom-textarea::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Hover state color */
+}
+
+.custom-textarea::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
 
 
 .c *{

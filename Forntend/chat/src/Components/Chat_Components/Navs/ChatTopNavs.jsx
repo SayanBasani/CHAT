@@ -1,6 +1,9 @@
 import ChatNavDropdown from "./ChatNavDropdown";
-
+import { useContext } from "react";
+import { AllStorage } from "../../../Storage/StorageProvider";
+import { socketConnReq } from "../../../Storage/Sockets";
 export default function ChatTopNavs(params) {
+  const {userData} = useContext(AllStorage);
   const handleDropDown = (event)=>{
     const ChatNavDropdown_div = document.querySelector('.ChatNavDropdown_div');
     ChatNavDropdown_div.classList.toggle('hidden');
@@ -17,6 +20,11 @@ export default function ChatTopNavs(params) {
     
     
   }
+  const handleYourProfileBtn = (event)=>{
+    console.log("profile_btn clicked");
+    socketConnReq(userData)
+    console.log("profile_btn clicked!");
+  }
   return (
     <>
       {/* <nav className="border flex items-center h-"> */}
@@ -32,10 +40,11 @@ export default function ChatTopNavs(params) {
           <button className="h-8 cursor-pointer p-2 border-y border-r-[1.5px] rounded-r-lg flex justify-center items-center"><i className="bi bi-search"></i></button>
         </div>
         <div>
-          <i className="bi bi-person-circle text-2xl"></i>
+          <button onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
+           
         </div>
-        <div className="flex justify-end">
-          <button onClick={(e)=>{
+        <div title="refress the connection" className="flex justify-end">
+          <button  onClick={(e)=>{
             handleDropDown(e);
           }} className="bi bi-three-dots-vertical cursor-pointer"></button>
         </div>
