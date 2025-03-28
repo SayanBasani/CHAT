@@ -5,7 +5,8 @@ import { useParams } from "react-router";
 import { AllStorage } from "../../Storage/StorageProvider";
 
 export default function ChatMessagesBox() {
-  const { register, handleSubmit, watch,reset, formState: { errors }, } = useForm()
+  const { register, handleSubmit, watch,reset, formState: { errors }, } = useForm();
+  const {messages, setmessages} = useContext(SocketContext)
   const { socket } = useContext(SocketContext);
   const { userData } = useContext(AllStorage);
   const { phoneNumber } = useParams();
@@ -16,9 +17,12 @@ export default function ChatMessagesBox() {
         return;
       }
       
-      socket.on("reciveMessage",({message,sender})=>{
+      // socket.on("reciveMessage",({message,sender})=>{
+      socket.on("reciveMessage",(data)=>{
         console.log("reciveMessage------------");
-        console.log(message,"---",sender);
+        // console.log(data);
+        setmessages((msg) => [...msg,data]);
+        // console.log(message,"---",sender);
         console.log("reciveMessage------------!");
       })
       return () => {

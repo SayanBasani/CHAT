@@ -1,9 +1,12 @@
+import { server } from "./index.js";
 import { User } from "./models.js";
+import { InitializeSocket } from "./sockets.js";
 
 export const checkUserIsLoginANDValid = async(req,res,next)=>{
   console.log("md--------------------------------");
   // console.log(req.originalUrl);
   const userCookie = req.cookies.user;
+  req.userCookie = userCookie;
   if (!userCookie){
     console.log("cookie is not found");
     req.isUser = null;
@@ -46,4 +49,13 @@ export const checkIsUser = async(req,res,next)=>{
   }
   console.log("checkIsUser --------------!");
   next()
+}
+
+export const InitializeSocketWithCredential = async(req,res,next)=>{
+  console.log("InitializeSocket---------------------");
+  InitializeSocket(server,true);
+  console.log("Initializetion is successful");
+  console.log("InitializeSocket---------------------!");
+  
+  next();
 }

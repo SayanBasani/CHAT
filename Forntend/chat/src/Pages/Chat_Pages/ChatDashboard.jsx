@@ -1,18 +1,34 @@
-import { Link, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom"
-import ChatSideNav from "../../Components/Chat_Components/Navs/ChatSideNav"
-import ChatTopNavs from "../../Components/Chat_Components/Navs/ChatTopNavs"
-import Chat from "./Chat"
-import Contects from "./Contects"
-import Calls from "./Calls"
-import Setting from "./Setting"
-import { useContext } from "react"
-import { AllStorage } from "../../Storage/StorageProvider"
-import TopNav from "../../Components/Navs/TopNav"
+import { Link, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import ChatSideNav from "../../Components/Chat_Components/Navs/ChatSideNav";
+import ChatTopNavs from "../../Components/Chat_Components/Navs/ChatTopNavs";
+import Chat from "./Chat";
+import Contects from "./Contects";
+import Calls from "./Calls";
+import Setting from "./Setting";
+import { useContext, useEffect } from "react";
+import { AllStorage } from "../../Storage/StorageProvider";
+import TopNav from "../../Components/Navs/TopNav";
+import { checkIsUserValid } from "../../Storage/ApiRequest";
 export default function ChatDashboard(params) {
   const navigate = useNavigate();
   const { userData } = useContext(AllStorage);
   const { phoneNumber } = useParams();
-  
+  console.log("into ChatDashboard");
+  useEffect(() => {
+    ;;
+    (
+      async (params) => {
+        const checkIsUserResponse = await checkIsUserValid();
+        console.log(checkIsUserResponse);
+        if(checkIsUserResponse.isLogin){
+          navigate("/Login");
+        }
+        else{
+          console.log("this is a logined user");
+        }
+      }
+    )();;
+  }, [])
   if (userData) {
     return (
       <>
@@ -23,10 +39,10 @@ export default function ChatDashboard(params) {
             <div className="w-full h-full">
               <Routes>
                 {
-                  phoneNumber?
-                  <Route path="/Chat/:phNumber" element={<Chat />} />
-                  :
-                  <Route path="/Chat/" element={<Chat />} />
+                  phoneNumber ?
+                    <Route path="/Chat/:phNumber" element={<Chat />} />
+                    :
+                    <Route path="/Chat/" element={<Chat />} />
                 }
                 <Route path="/Contects/" element={<Contects />} />
                 <Route path="/Calls/" element={<Calls />} />

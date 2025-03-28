@@ -1,13 +1,17 @@
 import express from "express";
-import { Sequelize, DataTypes, json } from "sequelize";
-import sequelize from "./DB.js";
-import { User, Message, Contact } from "./models.js";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import http from "http";
-import { InitializeSocket } from "./sockets.js";
-import { checkIsUser, checkUserIsLoginANDValid } from "./middleware.js";
+import sequelize from "./DB.js";
+import cookieParser from "cookie-parser";
 import FORNTEND_BASE_URL from "./config.js";
+import { User, Message, Contact } from "./models.js";
+import { InitializeSocket } from "./sockets.js";
+import {
+  checkIsUser,
+  checkUserIsLoginANDValid,
+  InitializeSocketWithCredential,
+} from "./middleware.js";
+import { Op, where } from "sequelize";
 
 async () => {
   console.log("try to 1");
@@ -31,11 +35,12 @@ app.use(
 app.use(cookieParser());
 const port = 3001;
 app.use(
-  ["/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/"],
+  ["/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/", "/chats/","/CheckLogin/"],
   checkUserIsLoginANDValid
 );
 app.use(["/getUserData/"], checkIsUser);
-const server = http.createServer(app);
+// app.use(["/chat/"],InitializeSocketWithCredential);
+export const server = http.createServer(app);
 InitializeSocket(server);
 
 async () => {
@@ -99,6 +104,18 @@ app.post("/loginUser/", async (req, res) => {
     if (user) {
       console.log("user is-->", user);
       res.cookie(
+        "userLoginCr",
+        JSON.stringify({
+          user_email: user.user_email,
+          user_ph_no: user.user_ph_no,
+        }),
+        {
+          httpOnly: false,
+          secure: true,
+          maxAge: 3 * 24 * 60 * 60 * 1000,
+        }
+      );
+      res.cookie(
         "user",
         JSON.stringify({
           user_email: user.user_email,
@@ -110,6 +127,7 @@ app.post("/loginUser/", async (req, res) => {
           secure: true,
           sameSite: "Lax",
           path: "/",
+          maxAge: 30 * 24 * 60 * 60 * 1000,
         }
       );
 
@@ -135,10 +153,28 @@ app.post("/loginUser/", async (req, res) => {
 
 app.post("/logOutUser/", (req, res) => {
   if (!req.isUser) {
+    res.clearCookie("user", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
+    res.clearCookie("userLoginCr", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
     res.send({ message: "There is somthing Wrong!", isLogout: true });
   } else {
     console.log("it is else ");
     res.clearCookie("user", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
+    res.clearCookie("userLoginCr", {
       httpOnly: true,
       secure: true,
       sameSite: "Lax",
@@ -178,19 +214,17 @@ app.post("/addContect/", async (req, res) => {
   }
   try {
     if (req.isUser) {
-      const isExist = await Contact.findAndCountAll(
-        {
-          where:{
-            user_id: req.isUser.user_id,
-            phoneNumber: req.body.phoneNumber
-          }
-        }
-      )
+      const isExist = await Contact.findAndCountAll({
+        where: {
+          user_id: req.isUser.user_id,
+          phoneNumber: req.body.phoneNumber,
+        },
+      });
 
-      if(isExist.count>0){
-        console.log("the count is ->",isExist.count);
-        
-        return res.send({message:"Already exists",error:"Already exists"})
+      if (isExist.count > 0) {
+        console.log("the count is ->", isExist.count);
+
+        return res.send({ message: "Already exists", error: "Already exists" });
       }
       let createContectcred = {
         user_id: req.isUser.user_id,
@@ -263,13 +297,12 @@ app.post("/getUserData/", async (req, res) => {
       });
 
       if (req.messageAble) {
-        console.log("final data !!!!!!!!!!!!!!!!!!!!!!!");
         const { user_id, user_ph_no, user_name } = req.messageAble;
         const aboutContact = {
           user_id,
           user_ph_no,
           user_name,
-          isActiveUser:true
+          isActiveUser: true,
         };
         console.log(aboutContact);
 
@@ -280,7 +313,7 @@ app.post("/getUserData/", async (req, res) => {
 
         res.send({
           message: "Invite For Connect!",
-          isActiveUser:false
+          isActiveUser: false,
         });
       }
     }
@@ -289,6 +322,70 @@ app.post("/getUserData/", async (req, res) => {
   }
   console.log("getUserData------------------!");
 });
+
+app.post("/chats/", async (req, res) => {
+  console.log("chat-----------------------");
+  const { user_id,user_ph_no } = JSON.parse(req.userCookie);
+  const reciver_phoneNumber = req.body.phoneNumber;
+  const reciverData = await User.findOne({
+    where: { user_ph_no: reciver_phoneNumber },
+  });
+  const reciverUser_id = reciverData.user_id;
+  
+  const AllMessage = await Message.findAll({
+    where: {
+      [Op.or]:[
+        {sender_id: user_id,receiver_id: reciverUser_id,},
+        {sender_id: reciverUser_id,receiver_id: user_id,},
+      ]
+    },
+    attributes:[
+      "uid", "message", "send_time", "receive_time", "seen_time", "is_read", "deleted", "sender_id", "receiver_id",
+    ]
+  });
+  const formattedMessages = AllMessage.map(msg => ({
+    uid: msg.uid,
+    message: msg.message,
+    send_time: msg.send_time,
+    receive_time: msg.receive_time,
+    seen_time: msg.seen_time,
+    is_read: msg.is_read,
+    deleted: msg.deleted,
+    // sender_id:msg.sender_id,
+    // receiver_id:msg.receiver_id,
+    // user_id:user_id,
+    // reciverUser_id:reciverUser_id,
+    sender_phoneNumber: (msg.sender_id == user_id) ? user_ph_no : reciver_phoneNumber,  // Sender's phone number
+    receiver_phoneNumber: (msg.receiver_id != user_id) ? reciver_phoneNumber : user_ph_no, // Receiver's phone number
+  }));
+
+  
+  console.log("All messages -->", formattedMessages);
+  // console.log("all messages -->",AllMessage);
+  console.log("chat-----------------------!");
+  res.send({ "message": "Successfully messages retrived","AllMessage":formattedMessages });
+});
+
+app.post("/CheckLogin/",(req,res)=>{
+  console.log("CheckLogin-->");
+  if(req.isUser){
+    res.send({isLogin : true});
+  }
+  res.clearCookie("userLoginCr", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+    path: "/",
+  });
+  res.clearCookie("user", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+    path: "/",
+  });
+  res.send({isLogin : false})
+  console.log("CheckLogin-->!");
+})
 
 server.listen(port, () => {
   console.log(`server is on port ${port}`);

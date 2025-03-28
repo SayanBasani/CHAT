@@ -34,4 +34,21 @@ export const getAllMessagesBW_S_R = async(data) => {
   } catch (error) {
     return error;
   }
+};
+
+export const checkIsUserValid = async (data) =>{
+  console.log("checkIsUserValed------>");
+  try {
+    const response = await fetch(`${API_BASE_URL}CheckLogin/`,{
+      method:"POST",
+      credentials:"include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    return "";
+  } catch (error) {
+    return {isValid : false};
+  }
 }
