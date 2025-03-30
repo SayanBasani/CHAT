@@ -1,26 +1,29 @@
 import ChatNavDropdown from "./ChatNavDropdown";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AllStorage } from "../../../Storage/StorageProvider";
 import { socketConnReq } from "../../../Storage/Sockets";
 export default function ChatTopNavs(params) {
-  const {userData} = useContext(AllStorage);
-  const handleDropDown = (event)=>{
-    const ChatNavDropdown_div = document.querySelector('.ChatNavDropdown_div');
-    ChatNavDropdown_div.classList.toggle('hidden');
+  const ChatNavDropdownMenuRef = useRef();
+  const ChatNavDropdownBtnRef = useRef();
+  const [chatNavDropdownval, setchatNavDropdownval] = useState(false);
+  const { userData, chatSideNavwidth, setchatSideNavwidth } = useContext(AllStorage);
+  const handleDropDown = (event) => {
+    setchatNavDropdownval(!chatNavDropdownval)
   }
-  const handleChatSideNav = (event)=>{
-    const ChatSideNav = document.querySelector(".ChatSideNav");
-    if(ChatSideNav.classList.contains('w-14')){
-      ChatSideNav.classList.add('w-44')
-      ChatSideNav.classList.remove('w-14')
-    }else{
-      ChatSideNav.classList.add('w-14')
-      ChatSideNav.classList.remove('w-44')
+  const handleChatSideNav = (event) => {
+    setchatSideNavwidth(!chatSideNavwidth);
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => { handleOutSideClick(e) });
+    function handleOutSideClick(e) {
+      if (chatNavDropdownval || !(ChatNavDropdownBtnRef.current.contains(e.target) || ChatNavDropdownMenuRef.current.contains(e.target))) {
+        console.log("outside");
+        setchatNavDropdownval(false)
+      }
     }
-    
-    
-  }
-  const handleYourProfileBtn = (event)=>{
+  }, [])
+  const handleYourProfileBtn = (event) => {
     console.log("profile_btn clicked");
     socketConnReq(userData)
     console.log("profile_btn clicked!");
@@ -29,10 +32,10 @@ export default function ChatTopNavs(params) {
   return (
     <>
       {/* <nav className="border flex items-center h-"> */}
-    
+
       <nav className="sticky top-0 z-30 darkTopNav p-3 h-14 grid grid-cols-[1fr_18fr_1fr_1fr] items-center ">
         <div>
-          <button onClick={(e)=>{
+          <button onClick={(e) => {
             handleChatSideNav(e);
           }} className="bi bi-list text-2xl"></button>
         </div>
@@ -42,16 +45,16 @@ export default function ChatTopNavs(params) {
         </div>
         <div>
           <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
-           
+
         </div>
         <div title="refress the connection" className="flex justify-end">
-          <button  onClick={(e)=>{
+          <button ref={ChatNavDropdownBtnRef} onClick={(e) => {
             handleDropDown(e);
           }} className="bi bi-three-dots-vertical cursor-pointer"></button>
         </div>
       </nav>
-      <div className="z-30 hidden ChatNavDropdown_div absolute top-14 right-10">
-        <ChatNavDropdown/>
+      <div ref={ChatNavDropdownMenuRef} className={`${chatNavDropdownval ? "" : "hidden"} z-30 ChatNavDropdown_div absolute top-14 right-10`}>
+        <ChatNavDropdown />
       </div>
     </>
   )

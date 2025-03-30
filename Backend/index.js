@@ -30,6 +30,7 @@ app.use(
   cors({
     origin: FORNTEND_BASE_URL,
     credentials: true,
+    methods:["GET","POST"]
   })
 );
 app.use(cookieParser());
@@ -349,6 +350,8 @@ app.post("/chats/", async (req, res) => {
   console.log("chat-----------------------");
   const { user_id, user_ph_no } = JSON.parse(req.userCookie);
   const reciver_phoneNumber = req.body.phoneNumber;
+  const lastMessageId = req.body.lastMessageId;
+  const limit = req.body.limit;
   const reciverData = await User.findOne({
     where: { user_ph_no: reciver_phoneNumber },
   });
@@ -357,25 +360,34 @@ app.post("/chats/", async (req, res) => {
   }
   // console.log(reciverData);
   const reciverUser_id = reciverData.user_id;
-  const AllMessage = await Message.findAll({
-    where: {
-      [Op.or]: [
-        { sender_id: user_id, receiver_id: reciverUser_id },
-        { sender_id: reciverUser_id, receiver_id: user_id },
-      ],
-    },
-    attributes: [
-      "uid",
-      "message",
-      "send_time",
-      "receive_time",
-      "seen_time",
-      "is_read",
-      "deleted",
-      "sender_id",
-      "receiver_id",
+
+  // for limited message return (not return all messages)
+  // const { limit = 5 , lastMessageId } = req.query;
+  console.log("lastMessageId-----");
+  console.log(lastMessageId);
+  console.log("lastMessageId-----!");
+  console.log(`the lastMessageId --> ${lastMessageId} --->`);
+  const whereCondition = {
+    [Op.or]: [
+      { sender_id: user_id, receiver_id: reciverUser_id },
+      { sender_id: reciverUser_id, receiver_id: user_id },
+    ],
+  };
+  if (lastMessageId){
+    whereCondition.uid = { [Op.lt]: lastMessageId};
+  }
+  const RetrivedMessage = await Message.findAll({
+    where: whereCondition,
+    limit : parseInt(10),
+    order:[["createdAt","DESC"]],
+    attributes: [ "uid", "message", "send_time", "receive_time", "seen_time", "is_read", "deleted", "sender_id", "receiver_id",
     ],
   });
+  const AllMessage = RetrivedMessage.reverse();
+  console.log("retrived messages ---->");
+  // console.log();
+  AllMessage.map(data=>console.log(data.uid))
+  console.log("retrived messages ---->!");
   const formattedMessages = AllMessage.map((msg) => ({
     uid: msg.uid,
     message: msg.message,

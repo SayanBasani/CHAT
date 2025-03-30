@@ -1,20 +1,35 @@
 import { Link, NavLink } from "react-router"
 import NavDropdown from "./NavDropdown"
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DarkToggle from "../Buttons/DarkToggle";
 
 export default function TopNav() {
   const [DropDown, setDropDown] = useState(false);
-  function hableDropDown(e) {
-    // console.log("---",e);
-    const dropDownManu = document.querySelector(".dropDownManu");
-    dropDownManu.classList.toggle("hidden");
-    console.log(dropDownManu);
-
+  const [topNavDropDown, settopNavDropDown] = useState(false);
+  const topNavDropDownMenu = useRef();
+  const topNavDropDownBtn = useRef();
+  function hableDropDown() {
+    settopNavDropDown(!topNavDropDown);
   }
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-  };
+
+
+  useEffect(() => {
+    document.addEventListener("click", (event) => {
+      // console.log(event.contains);
+
+      handleClickOutside(event)
+    })
+
+  }, [])
+  function handleClickOutside(e) {
+    if (topNavDropDownMenu.current.contains(e.target) || topNavDropDownBtn.current.contains(e.target)) {
+    } else {
+      settopNavDropDown(false)
+    }
+    console.log(e);
+    // if(e.tar)
+  }
+
   return <>
     <div>
       <nav className="darkTopNav p-3 bg-[rgb(246,247,247)] h-14 grid grid-cols-[1fr_18fr_1fr] items-center ">
@@ -26,12 +41,12 @@ export default function TopNav() {
           <button className="h-8 cursor-pointer p-2 border-y border-r-[1.5px] rounded-r-lg flex justify-center items-center"><i className="bi bi-search"></i></button>
         </div>
 
-        <button className="bi bi-list text-2xl" onClick={(e) => {
+        <button ref={topNavDropDownBtn} className="bi bi-list text-2xl" onClick={(e) => {
           hableDropDown(e);
         }}>
         </button>
       </nav>
-      <div className="hidden dropDownManu absolute top-14 right-10">
+      <div ref={topNavDropDownMenu} className={`${topNavDropDown ? "" : "hidden"} dropDownManu absolute top-14 right-10`}>
         <NavDropdown />
       </div>
     </div>

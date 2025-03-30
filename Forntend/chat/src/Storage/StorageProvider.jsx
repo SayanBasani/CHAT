@@ -17,6 +17,7 @@ export default function StorageProvider({ children }) {
     return isUser ? isUser : null;
   });
   const [allContectS, setallContectS] = useState(null);
+  const [chatSideNavwidth,setchatSideNavwidth]=useState(false);
 
   const chatSidebarOptions = [
     { 'name': 'Chat', 'icon_name': 'bi-chat' },
@@ -43,7 +44,8 @@ export default function StorageProvider({ children }) {
 
   return (
     <AllStorage.Provider value={{
-      userData, setuserData, chatSidebarOptions, allContectS, setallContectS
+      userData, setuserData, chatSidebarOptions, allContectS, setallContectS,
+      chatSideNavwidth,setchatSideNavwidth
     }}>
       {children}
     </AllStorage.Provider>

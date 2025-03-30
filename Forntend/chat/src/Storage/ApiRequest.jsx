@@ -52,3 +52,29 @@ export const checkIsUserValid = async (data) =>{
     return {isValid : false};
   }
 }
+
+export const getMessagesF = async(data,lastMessageId=90 ) => {
+  // console.log("get limited message ---------------------");
+  // console.log(data.phoneNumber , data.lastMessageId);
+  try {
+    if (!data) {
+      return { message: "No data" }
+    }
+    const response = await fetch(`${API_BASE_URL}chats/`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      // param: {lastMessageId },
+    })
+    const responseData = await response.json();
+    // console.log(response);
+    if(!response.ok){return {message:"Somthing Wrong!"}}
+    // console.log(responseData);
+    
+    // console.log("get limited message ---------------------!");
+    return responseData;
+  } catch (error) {
+    return error;
+  }
+};

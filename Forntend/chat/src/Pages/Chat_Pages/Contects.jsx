@@ -8,7 +8,7 @@ export default function Contects(params) {
       <div className="flex flex-col overflow-auto">
         <All_Contect_Preview />
       </div>
-      <div className="z-20 darkExtraPage absolute bottom-5 right-5 text-2xl border rounded-full w-9 h-9 flex items-center justify-center">
+      <div className="z-30 darkExtraPage absolute bottom-5 right-5 text-2xl border rounded-full w-9 h-9 flex items-center justify-center">
         <Add_New_Contect_Button />
       </div>
     </div>

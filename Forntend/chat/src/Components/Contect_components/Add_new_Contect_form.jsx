@@ -34,7 +34,7 @@ export default function Add_new_Contect_form() {
     }
   }
   return (<>
-    <div className="hidden Add_new_Contect_form justify-center items-center z-10 absolute top-0 left-0 w-full h-full flex border">
+    <div className="hidden Add_new_Contect_form justify-center items-center absolute top-0 left-0 w-full h-full flex border">
       <form onSubmit={handleSubmit(onSubmit)} className="contect_form darkExtraPage m-auto  grid w-80 max-sm:w-60 max-sm:p-5 p-10 bg-gray-100 rounded-2xl gap-5">
         <h1 className="text-2xl m-auto">Add Contects</h1>
         {/* <label htmlFor="" className="grid border rounded-xl p-1"> */}
