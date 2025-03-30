@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
-import { addContect } from "../../Storage/Account";
-export default function Add_new_Contect_form(params) {
-
+import { addContect, getAllContect } from "../../Storage/Account";
+import { useContext } from "react";
+import { AllStorage } from "../../Storage/StorageProvider";
+export default function Add_new_Contect_form() {
+  const {setallContectS} = useContext(AllStorage);
 
   const { handleSubmit, register, formState: { errors }, } = useForm();
 
@@ -10,10 +12,24 @@ export default function Add_new_Contect_form(params) {
     const response = await addContect(data);
 
     console.log("Response data:", response);
-    if(response.contectCreated){
+    if (response.contectCreated) {
       console.log("contect is created");
+
+      // try to update the contects 
+      try {
+        let responseAllContect = await getAllContect();
+        if (responseAllContect.allContecet) {
+          setallContectS(responseAllContect.allContecet);
+        } else {
+          console.log("no response res");
+        }
+        // console.log("complet");
+      } catch (error) {
+        console.log("error is occer");
+        console.error(error);
+      }
     }
-    if(response.message){
+    if (response.message) {
       alert(response.message)
     }
   }

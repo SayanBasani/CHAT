@@ -7,7 +7,7 @@ import { AllStorage } from "../../../Storage/StorageProvider";
 export default function ChatMsgArrangeMent(params) {
   const { messages,Socket } = useContext(SocketContext);
   const {userData} = useContext(AllStorage);
-  console.log(messages);
+  // console.log(messages);
   // console.log(userData);
   return (<>
     <div>

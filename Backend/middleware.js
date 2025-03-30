@@ -41,13 +41,13 @@ export const checkIsUser = async(req,res,next)=>{
       user_ph_no :user_ph_no || phoneNumber
     }})
     console.log("messageAble--> ",!(messageAble==null)," <--messageAble");
+    console.log("checkIsUser --------------!");
     req.messageAble = messageAble || null;
     
     // if(user)
   } catch (error) {
     return res.send(error)
   }
-  console.log("checkIsUser --------------!");
   next()
 }
 

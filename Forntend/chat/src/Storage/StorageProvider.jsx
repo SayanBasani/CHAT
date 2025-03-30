@@ -33,7 +33,7 @@ export default function StorageProvider({ children }) {
         } else {
           console.log("no response res");
         }
-        console.log("complet");
+        // console.log("complet");
       } catch (error) {
         console.log("error is occer");
         console.error(error);

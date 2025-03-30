@@ -97,3 +97,5 @@ export const Contact = sequelize.define("Contact", {
     allowNull: true,
   },
 });
+User.hasMany(Contact, { foreignKey: "user_id", onDelete: "CASCADE" });
+Contact.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });

@@ -11,7 +11,7 @@ export default function Chat(params) {
   const [isActiveUser, setisActiveUser] = useState(false);
 
   useEffect(() => {
-    console.log("ph is --->", phoneNumber);
+    // console.log("ph is --->", phoneNumber);
     const fetchContactData = async () => {
       if (!phoneNumber) {
         // console.log("No phone number provided for chat");

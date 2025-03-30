@@ -25,6 +25,12 @@ export default function ChatMessagesBox() {
         // console.log(message,"---",sender);
         console.log("reciveMessage------------!");
       })
+
+      socket.on("iAmOnline",(data)=>{
+        console.log("iAmOnline-------");
+        console.log(data);
+        console.log("iAmOnline-------!");
+      })
       return () => {
         console.log("Cleaning up socket listeners...");
         socket.off("sendMessage");

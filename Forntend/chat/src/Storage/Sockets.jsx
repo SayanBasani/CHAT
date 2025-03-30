@@ -9,7 +9,7 @@ export const SocketContext = createContext();
 
 
 export const socketConnReq = (data) => {
-  console.log("socketConnReq");
+  // console.log("socketConnReq");
   try {
     if (!data) {
       return { message: "no data" }

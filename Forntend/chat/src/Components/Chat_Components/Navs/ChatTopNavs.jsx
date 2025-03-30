@@ -25,6 +25,7 @@ export default function ChatTopNavs(params) {
     socketConnReq(userData)
     console.log("profile_btn clicked!");
   }
+  // console.log(userData);
   return (
     <>
       {/* <nav className="border flex items-center h-"> */}
@@ -40,7 +41,7 @@ export default function ChatTopNavs(params) {
           <button className="h-8 cursor-pointer p-2 border-y border-r-[1.5px] rounded-r-lg flex justify-center items-center"><i className="bi bi-search"></i></button>
         </div>
         <div>
-          <button onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
+          <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
            
         </div>
         <div title="refress the connection" className="flex justify-end">

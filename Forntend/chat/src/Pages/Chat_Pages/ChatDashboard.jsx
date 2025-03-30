@@ -13,18 +13,18 @@ export default function ChatDashboard(params) {
   const navigate = useNavigate();
   const { userData } = useContext(AllStorage);
   const { phoneNumber } = useParams();
-  console.log("into ChatDashboard");
+  // console.log("into ChatDashboard");
   useEffect(() => {
     ;;
     (
       async (params) => {
         const checkIsUserResponse = await checkIsUserValid();
-        console.log(checkIsUserResponse);
+        // console.log(checkIsUserResponse);
         if(checkIsUserResponse.isLogin){
           navigate("/Login");
         }
         else{
-          console.log("this is a logined user");
+          // console.log("this is a logined user");
         }
       }
     )();;

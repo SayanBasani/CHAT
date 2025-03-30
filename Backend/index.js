@@ -35,7 +35,14 @@ app.use(
 app.use(cookieParser());
 const port = 3001;
 app.use(
-  ["/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/", "/chats/","/CheckLogin/"],
+  [
+    "/addContect",
+    "/logOutUser/",
+    "/getAllContect/",
+    "/getUserData/",
+    "/chats/",
+    "/CheckLogin/",
+  ],
   checkUserIsLoginANDValid
 );
 app.use(["/getUserData/"], checkIsUser);
@@ -59,12 +66,27 @@ async () => {
 };
 
 app.get("/", async (req, res) => {
-  // const allUser = await User.findAll();
-  // console.log(allUser);
-  console.log("---------------++++++++++++");
-  console.log(app.mountpath);
-  res.send(["connection is ok"]);
-  console.log("---------------++++++++++++");
+  try {
+    // const { user1, user2 } = req.params;
+    const { page = 1, limit = 10, lastMessageId } = req.query; // Default 10 messages
+
+    const whereCondition = {};
+
+    // If lastMessageId is provided, load older messages
+    if (lastMessageId) {
+      whereCondition.uid = { [Op.lt]: lastMessageId };
+    }
+
+    const messages = await Message.findAll({
+      where: whereCondition,
+      order: [["send_time", "DESC"]],
+      limit: parseInt(limit),
+    });
+
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
 });
 
 app.post("/create/", async (req, res) => {
@@ -274,6 +296,7 @@ app.post("/getAllContect/", async (req, res) => {
       });
       console.log(response);
       // const sendableData = response.filter
+      console.log("getAllContect --------------------------------!");
       res.send({ message: "it is a valied user", allContecet: response });
     } else {
       res.send({ message: "somthing problem,Login" });
@@ -282,7 +305,6 @@ app.post("/getAllContect/", async (req, res) => {
     console.log("err is ->", error);
     res.send(error);
   }
-  console.log("getAllContect --------------------------------!");
 });
 
 app.post("/getUserData/", async (req, res) => {
@@ -325,25 +347,36 @@ app.post("/getUserData/", async (req, res) => {
 
 app.post("/chats/", async (req, res) => {
   console.log("chat-----------------------");
-  const { user_id,user_ph_no } = JSON.parse(req.userCookie);
+  const { user_id, user_ph_no } = JSON.parse(req.userCookie);
   const reciver_phoneNumber = req.body.phoneNumber;
   const reciverData = await User.findOne({
     where: { user_ph_no: reciver_phoneNumber },
   });
+  if (!reciverData) {
+    return res.send({ message: "user is not Found" });
+  }
+  // console.log(reciverData);
   const reciverUser_id = reciverData.user_id;
-  
   const AllMessage = await Message.findAll({
     where: {
-      [Op.or]:[
-        {sender_id: user_id,receiver_id: reciverUser_id,},
-        {sender_id: reciverUser_id,receiver_id: user_id,},
-      ]
+      [Op.or]: [
+        { sender_id: user_id, receiver_id: reciverUser_id },
+        { sender_id: reciverUser_id, receiver_id: user_id },
+      ],
     },
-    attributes:[
-      "uid", "message", "send_time", "receive_time", "seen_time", "is_read", "deleted", "sender_id", "receiver_id",
-    ]
+    attributes: [
+      "uid",
+      "message",
+      "send_time",
+      "receive_time",
+      "seen_time",
+      "is_read",
+      "deleted",
+      "sender_id",
+      "receiver_id",
+    ],
   });
-  const formattedMessages = AllMessage.map(msg => ({
+  const formattedMessages = AllMessage.map((msg) => ({
     uid: msg.uid,
     message: msg.message,
     send_time: msg.send_time,
@@ -355,37 +388,44 @@ app.post("/chats/", async (req, res) => {
     // receiver_id:msg.receiver_id,
     // user_id:user_id,
     // reciverUser_id:reciverUser_id,
-    sender_phoneNumber: (msg.sender_id == user_id) ? user_ph_no : reciver_phoneNumber,  // Sender's phone number
-    receiver_phoneNumber: (msg.receiver_id != user_id) ? reciver_phoneNumber : user_ph_no, // Receiver's phone number
+    sender_phoneNumber:
+      msg.sender_id == user_id ? user_ph_no : reciver_phoneNumber, // Sender's phone number
+    receiver_phoneNumber:
+      msg.receiver_id != user_id ? reciver_phoneNumber : user_ph_no, // Receiver's phone number
   }));
 
-  
-  console.log("All messages -->", formattedMessages);
+  // console.log("All messages -->", formattedMessages);
   // console.log("all messages -->",AllMessage);
   console.log("chat-----------------------!");
-  res.send({ "message": "Successfully messages retrived","AllMessage":formattedMessages });
+  res.send({
+    message: "Successfully messages retrived",
+    AllMessage: formattedMessages,
+  });
 });
 
-app.post("/CheckLogin/",(req,res)=>{
+app.post("/CheckLogin/", (req, res) => {
+  console.log("req.isUser");
+  console.log(req.isUser);
   console.log("CheckLogin-->");
-  if(req.isUser){
-    res.send({isLogin : true});
+  if (req.isUser) {
+    res.send({ isLogin: true });
+  }else{
+    res.clearCookie("userLoginCr", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
+    res.clearCookie("user", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
+    res.send({ isLogin: false });
   }
-  res.clearCookie("userLoginCr", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Lax",
-    path: "/",
-  });
-  res.clearCookie("user", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Lax",
-    path: "/",
-  });
-  res.send({isLogin : false})
   console.log("CheckLogin-->!");
-})
+});
 
 server.listen(port, () => {
   console.log(`server is on port ${port}`);
