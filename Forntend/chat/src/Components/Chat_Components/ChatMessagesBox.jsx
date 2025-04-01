@@ -19,11 +19,13 @@ export default function ChatMessagesBox() {
       
       // socket.on("reciveMessage",({message,sender})=>{
       socket.on("reciveMessage",(data)=>{
-        console.log("reciveMessage------------");
-        // console.log(data);
-        setmessages((msg) => [...msg,data]);
-        // console.log(message,"---",sender);
-        console.log("reciveMessage------------!");
+      //   console.log("reciveMessage------------");
+        console.log("in the msgBox--->",data);
+        // console.log(typeof(data));
+        setmessages((prevMsg) => ({
+          ...prevMsg,[phoneNumber]:[...prevMsg[phoneNumber],data]
+        }))
+      //   console.log("reciveMessage------------!");
       })
 
       socket.on("iAmOnline",(data)=>{

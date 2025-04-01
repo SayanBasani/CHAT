@@ -30,7 +30,7 @@ app.use(
   cors({
     origin: FORNTEND_BASE_URL,
     credentials: true,
-    methods:["GET","POST"]
+    methods: ["GET", "POST"],
   })
 );
 app.use(cookieParser());
@@ -43,10 +43,11 @@ app.use(
     "/getUserData/",
     "/chats/",
     "/CheckLogin/",
+    "/getUserData/",
   ],
   checkUserIsLoginANDValid
 );
-app.use(["/getUserData/"], checkIsUser);
+app.use(["/getContactData/"], checkIsUser);
 // app.use(["/chat/"],InitializeSocketWithCredential);
 export const server = http.createServer(app);
 InitializeSocket(server);
@@ -308,7 +309,7 @@ app.post("/getAllContect/", async (req, res) => {
   }
 });
 
-app.post("/getUserData/", async (req, res) => {
+app.post("/getContactData/", async (req, res) => {
   console.log("getUserData------------------");
   try {
     const { phoneNumber } = req.body;
@@ -346,73 +347,93 @@ app.post("/getUserData/", async (req, res) => {
   console.log("getUserData------------------!");
 });
 
+
 app.post("/chats/", async (req, res) => {
   console.log("chat-----------------------");
-  const { user_id, user_ph_no } = JSON.parse(req.userCookie);
-  const reciver_phoneNumber = req.body.phoneNumber;
-  const lastMessageId = req.body.lastMessageId;
-  const limit = req.body.limit;
-  const reciverData = await User.findOne({
-    where: { user_ph_no: reciver_phoneNumber },
-  });
-  if (!reciverData) {
-    return res.send({ message: "user is not Found" });
-  }
-  // console.log(reciverData);
-  const reciverUser_id = reciverData.user_id;
+  try {
+    const { user_id, user_ph_no } = JSON.parse(req.userCookie);
+    const reciver_phoneNumber = req.body.phoneNumber;
+    // const lastMessageId = req.body.lastMessageId;
+    const lastMessageId = req.body.lastMessageId
+      ? parseInt(req.body.lastMessageId, 10)
+      : null;
+    const limit = req.body.limit;
+    const reciverData = await User.findOne({
+      where: { user_ph_no: reciver_phoneNumber },
+    });
+    if (!reciverData) {
+      return res.send({ message: "user is not Found" });
+    }
+    const reciverUser_id = reciverData.user_id;
 
-  // for limited message return (not return all messages)
-  // const { limit = 5 , lastMessageId } = req.query;
-  console.log("lastMessageId-----");
-  console.log(lastMessageId);
-  console.log("lastMessageId-----!");
-  console.log(`the lastMessageId --> ${lastMessageId} --->`);
-  const whereCondition = {
-    [Op.or]: [
-      { sender_id: user_id, receiver_id: reciverUser_id },
-      { sender_id: reciverUser_id, receiver_id: user_id },
-    ],
-  };
-  if (lastMessageId){
-    whereCondition.uid = { [Op.lt]: lastMessageId};
-  }
-  const RetrivedMessage = await Message.findAll({
-    where: whereCondition,
-    limit : parseInt(10),
-    order:[["createdAt","DESC"]],
-    attributes: [ "uid", "message", "send_time", "receive_time", "seen_time", "is_read", "deleted", "sender_id", "receiver_id",
-    ],
-  });
-  const AllMessage = RetrivedMessage.reverse();
-  console.log("retrived messages ---->");
-  // console.log();
-  AllMessage.map(data=>console.log(data.uid))
-  console.log("retrived messages ---->!");
-  const formattedMessages = AllMessage.map((msg) => ({
-    uid: msg.uid,
-    message: msg.message,
-    send_time: msg.send_time,
-    receive_time: msg.receive_time,
-    seen_time: msg.seen_time,
-    is_read: msg.is_read,
-    deleted: msg.deleted,
-    // sender_id:msg.sender_id,
-    // receiver_id:msg.receiver_id,
-    // user_id:user_id,
-    // reciverUser_id:reciverUser_id,
-    sender_phoneNumber:
-      msg.sender_id == user_id ? user_ph_no : reciver_phoneNumber, // Sender's phone number
-    receiver_phoneNumber:
-      msg.receiver_id != user_id ? reciver_phoneNumber : user_ph_no, // Receiver's phone number
-  }));
+    // for limited message return (not return all messages)
+    console.log(`the lastMessageId --> ${lastMessageId} --->`);
+    const whereCondition = {
+      [Op.or]: [
+        { sender_id: user_id, receiver_id: reciverUser_id },
+        { sender_id: reciverUser_id, receiver_id: user_id },
+      ],
+    };
+    if (lastMessageId) {
+      whereCondition.uid = { [Op.lt]: lastMessageId };
+    }
 
-  // console.log("All messages -->", formattedMessages);
-  // console.log("all messages -->",AllMessage);
-  console.log("chat-----------------------!");
-  res.send({
-    message: "Successfully messages retrived",
-    AllMessage: formattedMessages,
-  });
+    // Check if older messages exist
+    const olderMessagesExist = await Message.findOne({
+      where: { uid: { [Op.lt]: lastMessageId } },
+    });
+    console.log("Older messages exist:", olderMessagesExist ? "Yes" : "No");
+
+    const RetrivedMessage = await Message.findAll({
+      where: whereCondition,
+      limit : parseInt(limit),
+      order: [["uid", "DESC"]],
+      attributes: [
+        "uid",
+        "message",
+        "send_time",
+        "receive_time",
+        "seen_time",
+        "is_read",
+        "deleted",
+        "sender_id",
+        "receiver_id",
+      ],
+    });
+    const AllMessage = RetrivedMessage.reverse();
+    console.log("retrived messages ---->");
+    // console.log();
+    AllMessage.map((data) => console.log(data.uid));
+    console.log("retrived messages ---->!");
+    const formattedMessages = AllMessage.map((msg) => ({
+      uid: msg.uid,
+      message: msg.message,
+      send_time: msg.send_time,
+      receive_time: msg.receive_time,
+      seen_time: msg.seen_time,
+      is_read: msg.is_read,
+      deleted: msg.deleted,
+      // sender_id:msg.sender_id,
+      // receiver_id:msg.receiver_id,
+      // user_id:user_id,
+      // reciverUser_id:reciverUser_id,
+      sender_phoneNumber:
+        msg.sender_id == user_id ? user_ph_no : reciver_phoneNumber, // Sender's phone number
+      receiver_phoneNumber:
+        msg.receiver_id != user_id ? reciver_phoneNumber : user_ph_no, // Receiver's phone number
+    }));
+
+    // console.log("All messages -->", formattedMessages);
+    // console.log("all messages -->",AllMessage);
+    console.log("chat-----------------------!");
+    res.send({
+      message: "Successfully messages retrived",
+      AllMessage: formattedMessages,
+    });
+  } catch (error) {
+    console.error("Error message is -->", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.post("/CheckLogin/", (req, res) => {
@@ -421,7 +442,7 @@ app.post("/CheckLogin/", (req, res) => {
   console.log("CheckLogin-->");
   if (req.isUser) {
     res.send({ isLogin: true });
-  }else{
+  } else {
     res.clearCookie("userLoginCr", {
       httpOnly: true,
       secure: true,
@@ -438,6 +459,29 @@ app.post("/CheckLogin/", (req, res) => {
   }
   console.log("CheckLogin-->!");
 });
+
+app.post("/getUserData/",async(req,res)=>{
+  try {
+    if(req.isUser){
+      console.log("getUserData --->");
+      const {user_name,user_email,user_ph_no} = req.isUser;
+      // console.log("req.body--->",req.body);
+      // console.log("req.body.user_email--->",req.body.user_email,"user_email-->",user_email);
+      // console.log("req.body.user_ph_no--->",req.body.user_ph_no,"user_ph_no-->",user_ph_no);
+      // if(req.body.user_email === user_email && req.body.user_ph_no === user_ph_no){
+        // console.log("response is->>",user_name,user_email,user_ph_no);
+        const respData = {user_name,user_email,user_ph_no};
+        console.log("respData ---->",respData);
+        return res.send(respData);
+      // }
+    }else{
+      return res.send({message:"Somthing Wrong !"})
+    }
+  } catch (error) {
+    console.log("somthing Error Occers");
+    return res.send({message:"Internal Server Error"})
+  }
+})
 
 server.listen(port, () => {
   console.log(`server is on port ${port}`);

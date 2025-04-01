@@ -2,7 +2,7 @@ import API_BASE_URL from "../config";
 
 export const getContactData = async (data) => {
   if (data) {
-    const response = await fetch(`${API_BASE_URL}getUserData/`, {
+    const response = await fetch(`${API_BASE_URL}getContactData/`, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(data),
@@ -60,6 +60,7 @@ export const getMessagesF = async(data,lastMessageId=90 ) => {
     if (!data) {
       return { message: "No data" }
     }
+    data.limit = 11;
     const response = await fetch(`${API_BASE_URL}chats/`, {
       method: "POST",
       credentials: "include",
@@ -78,3 +79,26 @@ export const getMessagesF = async(data,lastMessageId=90 ) => {
     return error;
   }
 };
+
+export const getUserData = async (data) =>{
+  console.log("get user data -->",data);
+  try {
+    const response = await fetch(`${API_BASE_URL}getUserData/`,{
+      method:"POST",
+      credentials: "include",
+      body:JSON.stringify(data)
+    })
+    if (!response.ok) {
+      // Handle HTTP errors
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return { error: true, message: "Failed to fetch user data" };
+    }
+    // console.log("get user data -->");
+    const responseData = await response.json();
+    // console.log(response);
+    // console.log(responseData);
+    return responseData;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -3,6 +3,7 @@ import { getAllContect } from "./Account";
 export const AllStorage = createContext();
 
 export default function StorageProvider({ children }) {
+
   function getCookie(name) {
     return document.cookie
       .split("; ")
@@ -18,6 +19,8 @@ export default function StorageProvider({ children }) {
   });
   const [allContectS, setallContectS] = useState(null);
   const [chatSideNavwidth,setchatSideNavwidth]=useState(false);
+  const [messageLoading,setMessageLoading]=useState(false);
+  const [userPData,setuserPData]=useState(null);
 
   const chatSidebarOptions = [
     { 'name': 'Chat', 'icon_name': 'bi-chat' },
@@ -45,7 +48,8 @@ export default function StorageProvider({ children }) {
   return (
     <AllStorage.Provider value={{
       userData, setuserData, chatSidebarOptions, allContectS, setallContectS,
-      chatSideNavwidth,setchatSideNavwidth
+      chatSideNavwidth,setchatSideNavwidth,messageLoading,setMessageLoading,
+      userPData,setuserPData,
     }}>
       {children}
     </AllStorage.Provider>

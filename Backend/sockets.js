@@ -96,9 +96,20 @@ export const InitializeSocket = (server, expressApp) => {
           const socketId = online[0].socketId;
 
           console.log(socketId);
+          // socket.to(socketId).emit("reciveMessage", {
+          //   message,
+          //   sender,
+          // });
           socket.to(socketId).emit("reciveMessage", {
-            message,
-            sender,
+            deleted: false,
+            is_read: false,
+            message: message,
+            receive_time: null,
+            seen_time: null,
+            send_time: new Date().toISOString(),
+            receiver_phoneNumber: reciver,
+            sender_phoneNumber: user_ph_no,
+            uid: 3,
           });
         } else {
           console.log(`Recipient (${reciver}) is not online.`);

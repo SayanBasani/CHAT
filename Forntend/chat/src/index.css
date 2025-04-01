@@ -4,7 +4,7 @@ html.dark body {
   color: white;
 }
 html.dark .darkTopNav {
-  background-color: rgb(12, 10, 36) ;
+  background-color: rgb(12, 10, 36);
   color: white;
 }
 html.dark .darkDarkTogelBtn {
@@ -15,19 +15,19 @@ html.dark .darkDarkTogelBtn {
   /* background-color: rgb(12, 10, 36) ; */
   color: rgb(8, 8, 8);
 }
-.darkTopNav{
+.darkTopNav {
   background-color: rgb(237, 239, 240);
   color: black;
 }
 html.dark .darkExtraPage {
-  background-color: rgb(12, 10, 36) ;
+  background-color: rgb(12, 10, 36);
   color: white;
 }
-.chatSubNav{
+.chatSubNav {
   background: #ece9e9;
   border: 1px solid white;
 }
-html.dark .chatSubNav{
+html.dark .chatSubNav {
   background: #130c28;
   border: 1px solid rgb(0, 0, 0);
 }
@@ -60,18 +60,30 @@ html.dark .chatSubNav{
   background: #f1f1f1; /* Track color */
 }
 
-
-.c *{
+.c * {
   border: 1px solid rgb(255, 250, 250);
 }
-.a{
-  border:  1px solid red;
+.a {
+  border: 1px solid red;
   padding: 2px;
   margin: 2px;
 }
-.b{
+.b {
   border: 1px solid yellow;
 }
-.d{
+.d {
   border: 1px solid green;
+}
+
+.shadowBox {
+  -webkit-box-shadow: 9px -4px 41px 7px rgba(0, 0, 0, 0.58);
+  -moz-box-shadow: 9px -4px 41px 7px rgba(0, 0, 0, 0.58);
+  box-shadow: 9px -4px 41px 7px rgba(0, 0, 0, 0.58);
+}
+
+.cardBoxText{
+  color: black;
+}
+html.dark .cardBoxText{
+  color: rgb(255, 255, 255);
 }

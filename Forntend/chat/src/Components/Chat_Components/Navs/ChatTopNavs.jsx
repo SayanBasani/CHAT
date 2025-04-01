@@ -1,28 +1,43 @@
 import ChatNavDropdown from "./ChatNavDropdown";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AllStorage } from "../../../Storage/StorageProvider";
 import { socketConnReq } from "../../../Storage/Sockets";
+import { Link } from "react-router";
 export default function ChatTopNavs(params) {
   const ChatNavDropdownMenuRef = useRef();
   const ChatNavDropdownBtnRef = useRef();
   const [chatNavDropdownval, setchatNavDropdownval] = useState(false);
   const { userData, chatSideNavwidth, setchatSideNavwidth } = useContext(AllStorage);
-  const handleDropDown = (event) => {
-    setchatNavDropdownval(!chatNavDropdownval)
+  const handleDropDown = () => {
+    setchatNavDropdownval((prev) => !prev)
   }
-  const handleChatSideNav = (event) => {
-    setchatSideNavwidth(!chatSideNavwidth);
+  const handleChatSideNav = () => {
+    setchatSideNavwidth((prev) => !prev);
   }
 
+  const handleOutSideClick = useCallback((e) => {
+    if (
+      !ChatNavDropdownBtnRef.current ||
+      !ChatNavDropdownMenuRef.current ||
+      ChatNavDropdownBtnRef.current.contains(e.target) ||
+      ChatNavDropdownMenuRef.current.contains(e.target)
+    ) {
+      return;
+    }
+    // if (chatNavDropdownval || !(ChatNavDropdownBtnRef.current.contains(e.target) || ChatNavDropdownMenuRef.current.contains(e.target))) {
+    setchatNavDropdownval(false)
+    // }
+  }, [setchatNavDropdownval])
   useEffect(() => {
-    document.addEventListener("click", (e) => { handleOutSideClick(e) });
-    function handleOutSideClick(e) {
-      if (chatNavDropdownval || !(ChatNavDropdownBtnRef.current.contains(e.target) || ChatNavDropdownMenuRef.current.contains(e.target))) {
-        console.log("outside");
-        setchatNavDropdownval(false)
+
+    if (chatNavDropdownval) {
+      document.addEventListener("click", handleOutSideClick);
+      return () => {
+        document.removeEventListener("click", handleOutSideClick);
       }
     }
-  }, [])
+  }, [chatNavDropdownval, handleOutSideClick])
+
   const handleYourProfileBtn = (event) => {
     console.log("profile_btn clicked");
     socketConnReq(userData)
@@ -44,7 +59,9 @@ export default function ChatTopNavs(params) {
           <button className="h-8 cursor-pointer p-2 border-y border-r-[1.5px] rounded-r-lg flex justify-center items-center"><i className="bi bi-search"></i></button>
         </div>
         <div>
-          <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
+          <Link to={"/Profile"}>
+            <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
+          </Link>
 
         </div>
         <div title="refress the connection" className="flex justify-end">

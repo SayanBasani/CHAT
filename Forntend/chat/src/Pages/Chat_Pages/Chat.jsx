@@ -1,48 +1,65 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ChatMsgArrangeMent from "../../Components/Chat_Components/ChatMessages/ChatMsgArrangeMent";
 import ChatMessagesBox from "../../Components/Chat_Components/ChatMessagesBox";
 import { useParams } from "react-router-dom";
 import { getAllMessagesBW_S_R, getContactData, getMessagesF } from "../../Storage/ApiRequest";
 import { SocketContext } from "../../Storage/Sockets";
+import { AllStorage } from "../../Storage/StorageProvider";
 export default function Chat(params) {
-  const {messages, setmessages} = useContext(SocketContext);
+  const { messages, setmessages } = useContext(SocketContext);
+  const { messageLoading, setMessageLoading } = useContext(AllStorage);
   const { phoneNumber } = useParams();
   const [chatingWith, setchatingWith] = useState(false);
   const [isActiveUser, setisActiveUser] = useState(false);
 
+  
+
   const loadMessages = async () => {
-    // console.log("last messsages are -->",messages);
-    // const lastMessageId = messages[0]?.uid ;
-    const lastMessageId = messages[0]?.uid ;
-    // console.log("the last message uid is ",lastMessageId);
-    const responseMsg = await getMessagesF({ phoneNumber ,lastMessageId});
-    if (!responseMsg) {
+    setMessageLoading(true);
+    // let lastMessageId = messages[0]?.uid ;
+    let lastMessageId = messages[phoneNumber]?.[0]?.uid || null;
+    // let lastMessageId = null ;
+    let responseMsg = await getMessagesF({ phoneNumber, lastMessageId });
+    if (!responseMsg || !responseMsg.AllMessage?.length) {
       console.error("Somthing Wrong");
+      setMessageLoading(false)
     }
-    // console.log(responseMsg.AllMessage);
     const recivedOldMessage = responseMsg.AllMessage;
-    setTimeout(()=>{
-    setmessages([...recivedOldMessage,...messages]);
-    },500);
+
+    setTimeout(() => {
+      // setmessages([...recivedOldMessage,...messages]);
+
+      setmessages(prevMsg => ({
+        ...prevMsg, [phoneNumber]: [...recivedOldMessage, ...(prevMsg[phoneNumber] || [])]
+      }));
+    }, 500);
+
+    setMessageLoading(false)
   }
 
+
+
   useEffect(() => {
-    // console.log("ph is --->", phoneNumber);
+    // console.log("messages are update");
+    console.log(messages);
+    // console.log("messages are update  !");
+  }, [messages])
+
+  useEffect(() => {
+    console.log("phoneNumber -->", phoneNumber);
     const fetchContactData = async () => {
       if (!phoneNumber) {
-        // console.log("No phone number provided for chat");
         return;
       }
-
       try {
         const response = await getContactData({ phoneNumber });
         if (!response) {
           console.error("somthing Wrong!");
         }
+        console.log("response --->" ,response);
+        console.log(response.isActiveUser);
         setisActiveUser(response.isActiveUser);
         setchatingWith(response);
-
-        // const responseMsg = await getAllMessagesBW_S_R({ phoneNumber });
         loadMessages();
       } catch (err) {
         console.error("Error fetching contact data:", err);
@@ -52,18 +69,19 @@ export default function Chat(params) {
     fetchContactData();
   }, [phoneNumber]);
 
- 
+
   const handleScroll = async (e) => {
-    // console.log(e);
+    // console.log(e.target);
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (Math.abs(scrollTop) + clientHeight >= scrollHeight - 10) {
-    // if (e.target.scrollTop === 0) {
+      // console.log(e.target.clientHeight);
+      // if (e.target.scrollTop === 0) {
       console.log("Loading older messages...");
       await loadMessages();  // Load more messages when scrolled to the top
     }
   };
-  
-  
+
+  // const messageScrollRef = useRef();
   return (<>
     <main className="grid grid-rows-[50px_1fr_55px] h-full">
       {
@@ -80,6 +98,7 @@ export default function Chat(params) {
               </nav>
               <div onScroll={handleScroll} className="flex flex-col-reverse p-5 gap-2 overflow-auto">
                 <ChatMsgArrangeMent />
+                <div className="bg-red-600">{messageLoading ? "Loading..." : ""}</div>
               </div>
               <div className="w-full">
                 <ChatMessagesBox />

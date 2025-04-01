@@ -9,9 +9,12 @@ import { useContext, useEffect } from "react";
 import { AllStorage } from "../../Storage/StorageProvider";
 import TopNav from "../../Components/Navs/TopNav";
 import { checkIsUserValid } from "../../Storage/ApiRequest";
+import { SocketContext } from "../../Storage/Sockets";
+import Profile from "./Profile";
 export default function ChatDashboard(params) {
   const navigate = useNavigate();
   const { userData } = useContext(AllStorage);
+  const { socket,setmessages } = useContext(SocketContext);
   const { phoneNumber } = useParams();
   // console.log("into ChatDashboard");
   useEffect(() => {
@@ -20,15 +23,36 @@ export default function ChatDashboard(params) {
       async (params) => {
         const checkIsUserResponse = await checkIsUserValid();
         // console.log(checkIsUserResponse);
-        if(checkIsUserResponse.isLogin){
+        if (checkIsUserResponse.isLogin) {
           navigate("/Login");
         }
-        else{
+        else {
           // console.log("this is a logined user");
         }
       }
     )();;
-  }, [])
+
+    // socked related
+    try {
+      if (!socket) {
+        console.error("socket is null");
+        return;
+      }
+      socket.on("connect",()=>{console.log("hello");})
+      socket.on("reciveMessage", (data) => {
+        console.log("reciveMessage------------");
+        console.log("chat dashbord --->", data);
+        // console.log(typeof (data));
+        // setmessages((prevMsg) => ({
+        //   ...prevMsg, [phoneNumber]: [...prevMsg[phoneNumber], data]
+        // }))
+        console.log("reciveMessage------------!");
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    // socked related!
+  }, [socket])
   if (userData) {
     return (
       <>
@@ -47,6 +71,7 @@ export default function ChatDashboard(params) {
                 <Route path="/Contects/" element={<Contects />} />
                 <Route path="/Calls/" element={<Calls />} />
                 <Route path="/Setting/" element={<Setting />} />
+                <Route path="/Profile/" element={<Profile />} />
               </Routes>
             </div>
           </div>

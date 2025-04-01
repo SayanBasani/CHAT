@@ -29,7 +29,7 @@ export const socketConnReq = (data) => {
     });
     return socket;
   } catch (error) {
-    return { message: "somthing wrong!" }
+    return null
   }
 }
 
@@ -59,8 +59,8 @@ export default function SocketProvider({ children }) {
     };
   }, [userData]);
 
-  const [messages, setmessages] = useState([]);
-
+  // const [messages, setmessages] = useState([]);
+  const [messages, setmessages] = useState({});
   // settout
   let count = 0;
   
