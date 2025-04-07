@@ -15,7 +15,7 @@ import {
 } from "./middleware.js";
 import { Op, where } from "sequelize";
 
-(async () => {
+async () => {
   console.log("try to 1");
   try {
     await sequelize.sync({ alter: true });
@@ -24,10 +24,10 @@ import { Op, where } from "sequelize";
     console.error("Error in syncing User table");
     console.log(error);
   }
-})()
+};
 
-const app = express(); 
-export const ACCESS_SECRET = "access123"; 
+const app = express();
+export const ACCESS_SECRET = "access123";
 export const REFRESH_SECRET = "refresh123";
 app.use(express.json());
 app.use(
@@ -90,8 +90,9 @@ app.get("/", async (req, res) => {
 
     res.json(messages);
   } catch (error) {
-    res.status(500).json({ error: "sayan Failed to fetch messages" ,err:error });
-
+    res
+      .status(500)
+      .json({ error: "sayan Failed to fetch messages", err: error });
   }
 });
 
@@ -175,7 +176,6 @@ app.post("/loginUser/", async (req, res) => {
           maxAge: 30 * 24 * 60 * 60 * 1000,
         }
       );
-
 
       res.json({
         message: "Login successful!",
