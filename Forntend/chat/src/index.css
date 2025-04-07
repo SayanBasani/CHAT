@@ -87,3 +87,21 @@ html.dark .chatSubNav {
 html.dark .cardBoxText{
   color: rgb(255, 255, 255);
 }
+
+@keyframes bottomToUp {
+  from {
+    transform: translateY(400px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.editProfileVal{
+  /* transition: all 0.5s; */
+  animation: bottomToUp 0.25s ease-in-out 1;
+  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+}
+.addNewContect{
+  animation: bottomToUp 0.25s ease-in-out 1;
+}

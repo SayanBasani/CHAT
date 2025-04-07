@@ -102,3 +102,21 @@ export const getUserData = async (data) =>{
     console.error(error);
   }
 }
+
+export const updateUserData = async(data) => {
+  try {
+    console.log("/changeUserData/--------->",data);
+    const response = await fetch(`${API_BASE_URL}updateUserData/`,{
+      method:"PUT",
+      credentials:"include",
+      headers:{"Content-Type": "application/json",},
+      body:JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log("responseData --->" ,responseData);
+    console.log("/changeUserData/--------->!");
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+}

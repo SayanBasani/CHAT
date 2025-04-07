@@ -19,8 +19,8 @@ function Profile() {
 
     (async () => {
       const response = await getUserData(userData);
-      console.log(response);
       setuserPData(response);
+      
     })();
   }, [userData]);
 

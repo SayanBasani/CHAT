@@ -10,6 +10,7 @@ export default function ChatMessagesBox() {
   const { socket } = useContext(SocketContext);
   const { userData } = useContext(AllStorage);
   const { phoneNumber } = useParams();
+  
   useEffect(() => {
     try {
       if (!socket) {
@@ -29,9 +30,7 @@ export default function ChatMessagesBox() {
       })
 
       socket.on("iAmOnline",(data)=>{
-        console.log("iAmOnline-------");
-        console.log(data);
-        console.log("iAmOnline-------!");
+        console.log("iAmOnline-------"+data);
       })
       return () => {
         console.log("Cleaning up socket listeners...");

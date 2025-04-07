@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 import http from "http";
 import sequelize from "./DB.js";
 import cookieParser from "cookie-parser";
@@ -24,17 +25,19 @@ async () => {
   }
 };
 
-const app = express();
+const app = express(); 
+export const ACCESS_SECRET = "access123"; 
+export const REFRESH_SECRET = "refresh123";
 app.use(express.json());
 app.use(
   cors({
     origin: FORNTEND_BASE_URL,
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
   })
 );
 app.use(cookieParser());
-const port = 3001;
+const port = process.env.PORT || 3001;
 app.use(
   [
     "/addContect",
@@ -44,6 +47,7 @@ app.use(
     "/chats/",
     "/CheckLogin/",
     "/getUserData/",
+    "/updateUserData/",
   ],
   checkUserIsLoginANDValid
 );
@@ -126,6 +130,11 @@ app.post("/loginUser/", async (req, res) => {
     const user = await User.findOne({ where: { user_email, user_password } });
 
     if (user) {
+      const _userData_ = {
+        user_email: user.user_email,
+        user_ph_no: user.user_ph_no,
+        user_id: user.user_id,
+      };
       console.log("user is-->", user);
       res.cookie(
         "userLoginCr",
@@ -139,12 +148,24 @@ app.post("/loginUser/", async (req, res) => {
           maxAge: 3 * 24 * 60 * 60 * 1000,
         }
       );
+      res.cookie("user", JSON.stringify(_userData_), {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Lax",
+        path: "/",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      const accessToken = jwt.sign(_userData_, ACCESS_SECRET, {
+        expiresIn: "7d",
+      });
+      const refreshToken = jwt.sign(_userData_, REFRESH_SECRET, {
+        expiresIn: "30d",
+      });
       res.cookie(
-        "user",
+        "Tokens",
         JSON.stringify({
-          user_email: user.user_email,
-          user_ph_no: user.user_ph_no,
-          user_id: user.user_id,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
         }),
         {
           httpOnly: true,
@@ -155,16 +176,13 @@ app.post("/loginUser/", async (req, res) => {
         }
       );
 
+
       res.json({
         message: "Login successful!",
         login: true,
         user_email: user.user_email,
         user_ph_no: user.user_ph_no,
-        user: {
-          user_email: user.user_email,
-          user_ph_no: user.user_ph_no,
-          user_id: user.user_id,
-        },
+        user: _userData_,
       });
     } else {
       res.status(401).json({ error: "Invalid email or password!" });
@@ -296,7 +314,7 @@ app.post("/getAllContect/", async (req, res) => {
           exclude: ["Deleted", "user_id", "uid", "createdAt", "updatedAt"],
         },
       });
-      console.log(response);
+      // console.log(response);
       // const sendableData = response.filter
       console.log("getAllContect --------------------------------!");
       res.send({ message: "it is a valied user", allContecet: response });
@@ -347,7 +365,6 @@ app.post("/getContactData/", async (req, res) => {
   console.log("getUserData------------------!");
 });
 
-
 app.post("/chats/", async (req, res) => {
   console.log("chat-----------------------");
   try {
@@ -386,7 +403,7 @@ app.post("/chats/", async (req, res) => {
 
     const RetrivedMessage = await Message.findAll({
       where: whereCondition,
-      limit : parseInt(limit),
+      limit: parseInt(limit),
       order: [["uid", "DESC"]],
       attributes: [
         "uid",
@@ -437,8 +454,8 @@ app.post("/chats/", async (req, res) => {
 });
 
 app.post("/CheckLogin/", (req, res) => {
-  console.log("req.isUser");
-  console.log(req.isUser);
+  // console.log("req.isUser");
+  // console.log(req.isUser);
   console.log("CheckLogin-->");
   if (req.isUser) {
     res.send({ isLogin: true });
@@ -460,28 +477,56 @@ app.post("/CheckLogin/", (req, res) => {
   console.log("CheckLogin-->!");
 });
 
-app.post("/getUserData/",async(req,res)=>{
+app.post("/getUserData/", async (req, res) => {
   try {
-    if(req.isUser){
+    if (req.isUser) {
       console.log("getUserData --->");
-      const {user_name,user_email,user_ph_no} = req.isUser;
+      const { user_name, user_email, user_ph_no } = req.isUser;
       // console.log("req.body--->",req.body);
       // console.log("req.body.user_email--->",req.body.user_email,"user_email-->",user_email);
       // console.log("req.body.user_ph_no--->",req.body.user_ph_no,"user_ph_no-->",user_ph_no);
       // if(req.body.user_email === user_email && req.body.user_ph_no === user_ph_no){
-        // console.log("response is->>",user_name,user_email,user_ph_no);
-        const respData = {user_name,user_email,user_ph_no};
-        console.log("respData ---->",respData);
-        return res.send(respData);
+      // console.log("response is->>",user_name,user_email,user_ph_no);
+      const respData = { user_name, user_email, user_ph_no };
+      console.log("respData ---->", respData);
+      return res.send(respData);
       // }
-    }else{
-      return res.send({message:"Somthing Wrong !"})
+    } else {
+      return res.send({ message: "Somthing Wrong !" });
     }
   } catch (error) {
     console.log("somthing Error Occers");
-    return res.send({message:"Internal Server Error"})
+    return res.send({ message: "Internal Server Error" });
   }
-})
+});
+
+app.put("/updateUserData/", async (req, res) => {
+  try {
+    console.log("it is in to change user data ------->");
+    const data = req.body;
+    const userData = req.isUser;
+    if (data.newValue.length > 41) {
+      return res.send({ message: "valuse is Too big", update: false });
+    }
+    if (userData) {
+      if (data.field == "name") {
+        userData.user_name = data.newValue;
+      } else if (data.field == "email") {
+        userData.user_email = data.newValue;
+      } else if (data.field == "phone") {
+        userData.user_ph_no = data.newValue;
+      }
+      await userData.save();
+      return res.send({ message: "update successfull", update: true });
+    }
+    // console.log(userData);
+    console.log("it is in to change user data ------->!");
+    return res.send({ message: "Somthing Wrong", update: false });
+  } catch (error) {
+    console.error(error);
+    return res.send({ message: "Internal server Error!", update: false });
+  }
+});
 
 server.listen(port, () => {
   console.log(`server is on port ${port}`);
