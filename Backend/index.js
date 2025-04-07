@@ -90,7 +90,7 @@ app.get("/", async (req, res) => {
 
     res.json(messages);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch messages" ,err:error });
+    res.status(500).json({ error: "sayan Failed to fetch messages" ,err:error });
 
   }
 });
