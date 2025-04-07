@@ -1,12 +1,18 @@
 import e from "express";
+import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize('chat', 'root', 'admin', {
-  host: 'localhost',
-  dialect: 'mysql',
-  logging: console.log
-});
-
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    logging: console.log,
+  }
+);
+// database,username,password,options
 try {
   await sequelize.authenticate();
   console.log('Connection has been established successfully.');

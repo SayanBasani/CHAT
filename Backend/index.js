@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import http from "http";
 import sequelize from "./DB.js";
 import cookieParser from "cookie-parser";
@@ -67,8 +68,6 @@ async () => {
     is_read: true,
     deleted: false,
   };
-  // let mm = await Message.create(m);
-  // console.log(mm);
 };
 
 app.get("/", async (req, res) => {
@@ -91,16 +90,16 @@ app.get("/", async (req, res) => {
 
     res.json(messages);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch messages" });
+    res.status(500).json({ error: "sayan Failed to fetch messages",err:error });
   }
 });
 
 app.post("/create/", async (req, res) => {
-  console.log(req.body);
-  console.log("create-------------------");
+  // console.log(req.body);
+  // console.log("create-------------------");
   try {
     const user = await User.create(req.body);
-    console.log("...............");
+    // console.log("...............");
     res.send({
       accout: {
         user_email: user.user_email,
@@ -109,10 +108,10 @@ app.post("/create/", async (req, res) => {
       user_email: user.user_email,
       user_ph_no: user.user_ph_no,
     });
-    console.log("...............!");
-    console.log("create-------------------!");
+    // console.log("...............!");
+    // console.log("create-------------------!");
   } catch (error) {
-    console.log(error.errors[0].message);
+    // console.log(error.errors[0].message);
     res.send({
       "error message": error.errors[0].message,
       // 'error':erro
@@ -121,7 +120,7 @@ app.post("/create/", async (req, res) => {
 });
 
 app.post("/loginUser/", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { user_email, user_password } = req.body;
   if (!user_email || !user_password) {
     return res.status(400).json({ error: "Email and password are required!" });
@@ -135,7 +134,7 @@ app.post("/loginUser/", async (req, res) => {
         user_ph_no: user.user_ph_no,
         user_id: user.user_id,
       };
-      console.log("user is-->", user);
+      // console.log("user is-->", user);
       res.cookie(
         "userLoginCr",
         JSON.stringify({
@@ -188,7 +187,7 @@ app.post("/loginUser/", async (req, res) => {
       res.status(401).json({ error: "Invalid email or password!" });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -209,7 +208,7 @@ app.post("/logOutUser/", (req, res) => {
     });
     res.send({ message: "There is somthing Wrong!", isLogout: true });
   } else {
-    console.log("it is else ");
+    // console.log("it is else ");
     res.clearCookie("user", {
       httpOnly: true,
       secure: true,
@@ -227,7 +226,7 @@ app.post("/logOutUser/", (req, res) => {
 });
 
 app.post("/deleteUser/", async (req, res) => {
-  console.log("--------------------");
+  // console.log("--------------------");
   const { user_email, user_ph_no } = req.body;
   // console.log(uid);
   try {
@@ -237,16 +236,16 @@ app.post("/deleteUser/", async (req, res) => {
         user_ph_no: `${user_ph_no}`,
       },
     });
-    console.log(delete_user);
+    // console.log(delete_user);
     res.send("User is deleted");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.send("User is not deleted!");
   }
 });
 
 app.post("/addContect/", async (req, res) => {
-  console.log("this is addContect.--->", req.originalUrl);
+  // console.log("this is addContect.--->", req.originalUrl);
   const { ContactEmail, ContactName, phoneNumber } = req.body;
   if (!ContactName || !phoneNumber) {
     req.send({
@@ -264,7 +263,7 @@ app.post("/addContect/", async (req, res) => {
       });
 
       if (isExist.count > 0) {
-        console.log("the count is ->", isExist.count);
+        // console.log("the count is ->", isExist.count);
 
         return res.send({ message: "Already exists", error: "Already exists" });
       }
@@ -285,14 +284,14 @@ app.post("/addContect/", async (req, res) => {
         contectCreated: true,
       });
     } else {
-      console.log("you are not a valied user");
+      // console.log("you are not a valied user");
       res.send({
         message: "you are not a valied user",
         contectCreated: false,
       });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.send({
       message: "You are not a valied user . Re Login and try again",
       contectCreated: false,
@@ -301,7 +300,7 @@ app.post("/addContect/", async (req, res) => {
 });
 
 app.post("/getAllContect/", async (req, res) => {
-  console.log("getAllContect --------------------------------");
+  // console.log("getAllContect --------------------------------");
 
   try {
     if (req.isUser) {
@@ -316,23 +315,23 @@ app.post("/getAllContect/", async (req, res) => {
       });
       // console.log(response);
       // const sendableData = response.filter
-      console.log("getAllContect --------------------------------!");
+      // console.log("getAllContect --------------------------------!");
       res.send({ message: "it is a valied user", allContecet: response });
     } else {
       res.send({ message: "somthing problem,Login" });
     }
   } catch (error) {
-    console.log("err is ->", error);
+    // console.log("err is ->", error);
     res.send(error);
   }
 });
 
 app.post("/getContactData/", async (req, res) => {
-  console.log("getUserData------------------");
+  // console.log("getUserData------------------");
   try {
     const { phoneNumber } = req.body;
     if (phoneNumber || req.isUser) {
-      console.log(`required data are ${phoneNumber}`);
+      // console.log(`required data are ${phoneNumber}`);
 
       const userData = await Contact.findOne({
         where: { phoneNumber },
@@ -346,12 +345,12 @@ app.post("/getContactData/", async (req, res) => {
           user_name,
           isActiveUser: true,
         };
-        console.log(aboutContact);
+        // console.log(aboutContact);
 
-        console.log("send");
+        // console.log("send");
         res.send(aboutContact);
       } else {
-        console.log({ message: "Invite For Connect!" });
+        // console.log({ message: "Invite For Connect!" });
 
         res.send({
           message: "Invite For Connect!",
@@ -362,11 +361,11 @@ app.post("/getContactData/", async (req, res) => {
   } catch (error) {
     res.send(error);
   }
-  console.log("getUserData------------------!");
+  // console.log("getUserData------------------!");
 });
 
 app.post("/chats/", async (req, res) => {
-  console.log("chat-----------------------");
+  // console.log("chat-----------------------");
   try {
     const { user_id, user_ph_no } = JSON.parse(req.userCookie);
     const reciver_phoneNumber = req.body.phoneNumber;
@@ -384,7 +383,7 @@ app.post("/chats/", async (req, res) => {
     const reciverUser_id = reciverData.user_id;
 
     // for limited message return (not return all messages)
-    console.log(`the lastMessageId --> ${lastMessageId} --->`);
+    // console.log(`the lastMessageId --> ${lastMessageId} --->`);
     const whereCondition = {
       [Op.or]: [
         { sender_id: user_id, receiver_id: reciverUser_id },
@@ -399,7 +398,7 @@ app.post("/chats/", async (req, res) => {
     const olderMessagesExist = await Message.findOne({
       where: { uid: { [Op.lt]: lastMessageId } },
     });
-    console.log("Older messages exist:", olderMessagesExist ? "Yes" : "No");
+    // console.log("Older messages exist:", olderMessagesExist ? "Yes" : "No");
 
     const RetrivedMessage = await Message.findAll({
       where: whereCondition,
@@ -418,10 +417,10 @@ app.post("/chats/", async (req, res) => {
       ],
     });
     const AllMessage = RetrivedMessage.reverse();
-    console.log("retrived messages ---->");
+    // console.log("retrived messages ---->");
     // console.log();
     AllMessage.map((data) => console.log(data.uid));
-    console.log("retrived messages ---->!");
+    // console.log("retrived messages ---->!");
     const formattedMessages = AllMessage.map((msg) => ({
       uid: msg.uid,
       message: msg.message,
@@ -442,13 +441,13 @@ app.post("/chats/", async (req, res) => {
 
     // console.log("All messages -->", formattedMessages);
     // console.log("all messages -->",AllMessage);
-    console.log("chat-----------------------!");
+    // console.log("chat-----------------------!");
     res.send({
       message: "Successfully messages retrived",
       AllMessage: formattedMessages,
     });
   } catch (error) {
-    console.error("Error message is -->", error);
+    // console.error("Error message is -->", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -456,7 +455,7 @@ app.post("/chats/", async (req, res) => {
 app.post("/CheckLogin/", (req, res) => {
   // console.log("req.isUser");
   // console.log(req.isUser);
-  console.log("CheckLogin-->");
+  // console.log("CheckLogin-->");
   if (req.isUser) {
     res.send({ isLogin: true });
   } else {
@@ -474,13 +473,13 @@ app.post("/CheckLogin/", (req, res) => {
     });
     res.send({ isLogin: false });
   }
-  console.log("CheckLogin-->!");
+  // console.log("CheckLogin-->!");
 });
 
 app.post("/getUserData/", async (req, res) => {
   try {
     if (req.isUser) {
-      console.log("getUserData --->");
+      // console.log("getUserData --->");
       const { user_name, user_email, user_ph_no } = req.isUser;
       // console.log("req.body--->",req.body);
       // console.log("req.body.user_email--->",req.body.user_email,"user_email-->",user_email);
@@ -488,21 +487,21 @@ app.post("/getUserData/", async (req, res) => {
       // if(req.body.user_email === user_email && req.body.user_ph_no === user_ph_no){
       // console.log("response is->>",user_name,user_email,user_ph_no);
       const respData = { user_name, user_email, user_ph_no };
-      console.log("respData ---->", respData);
+      // console.log("respData ---->", respData);
       return res.send(respData);
       // }
     } else {
       return res.send({ message: "Somthing Wrong !" });
     }
   } catch (error) {
-    console.log("somthing Error Occers");
+    // console.log("somthing Error Occers");
     return res.send({ message: "Internal Server Error" });
   }
 });
 
 app.put("/updateUserData/", async (req, res) => {
   try {
-    console.log("it is in to change user data ------->");
+    // console.log("it is in to change user data ------->");
     const data = req.body;
     const userData = req.isUser;
     if (data.newValue.length > 41) {
@@ -520,10 +519,10 @@ app.put("/updateUserData/", async (req, res) => {
       return res.send({ message: "update successfull", update: true });
     }
     // console.log(userData);
-    console.log("it is in to change user data ------->!");
+    // console.log("it is in to change user data ------->!");
     return res.send({ message: "Somthing Wrong", update: false });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return res.send({ message: "Internal server Error!", update: false });
   }
 });
