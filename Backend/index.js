@@ -15,7 +15,7 @@ import {
 } from "./middleware.js";
 import { Op, where } from "sequelize";
 
-async () => {
+(async () => {
   console.log("try to 1");
   try {
     await sequelize.sync({ alter: true });
@@ -24,7 +24,7 @@ async () => {
     console.error("Error in syncing User table");
     console.log(error);
   }
-};
+})()
 
 const app = express(); 
 export const ACCESS_SECRET = "access123"; 
