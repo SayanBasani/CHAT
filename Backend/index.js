@@ -82,10 +82,10 @@ app.get("/", async (req, res) => {
       whereCondition.uid = { [Op.lt]: lastMessageId };
     }
 
-    const messages = await Message.findAll({
-      where: whereCondition,
-      order: [["send_time", "DESC"]],
-      limit: parseInt(limit),
+    const messages = await User.findAll({
+      // where: whereCondition,
+      // order: [["send_time", "DESC"]],
+      // limit: parseInt(limit),
     });
 
     res.json(messages);
