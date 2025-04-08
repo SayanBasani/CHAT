@@ -131,6 +131,7 @@ app.post("/loginUser/", async (req, res) => {
     const user = await User.findOne({ where: { user_email, user_password } });
 
     if (user) {
+      console.log("this is a valied user -->",user);
       const _userData_ = {
         user_email: user.user_email,
         user_ph_no: user.user_ph_no,
