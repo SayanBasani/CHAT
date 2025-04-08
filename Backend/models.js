@@ -78,7 +78,8 @@ export const Contact = sequelize.define("Contact", {
     primaryKey: true,
   },
   user_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
+    defaultValue:null,
     allowNull: true,
   },
   ContactName: {
@@ -97,5 +98,5 @@ export const Contact = sequelize.define("Contact", {
     allowNull: true,
   },
 });
-User.hasMany(Contact, { foreignKey: "user_id", onDelete: "CASCADE" });
-Contact.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
+// User.hasMany(Contact, { foreignKey: "user_id", onDelete: "CASCADE" });
+// Contact.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
