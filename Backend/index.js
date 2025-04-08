@@ -137,7 +137,7 @@ app.post("/loginUser/", async (req, res) => {
         user_ph_no: user.user_ph_no,
         user_id: user.user_id,
       };
-      // console.log("user is-->", user);
+      console.log("user is-->", _userData_);
       res.cookie(
         "userLoginCr",
         JSON.stringify({
