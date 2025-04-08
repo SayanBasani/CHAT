@@ -6,30 +6,34 @@ import { ACCESS_SECRET,REFRESH_SECRET } from "./index.js";
 export const checkUserIsLoginANDValid = async(req,res,next)=>{
   console.log("md--------------------------------",req.path);
   // console.log(req.originalUrl);
-  const userCookie = req.cookies.user;
-  const csrftokenCookie = req.cookies.Tokens;
-  const {accessToken,refreshToken} = JSON.parse(csrftokenCookie);
-  // console.log("csrftokenCookie ---->",accessToken,"------------",refreshToken,"!!");
-  console.log("--------------------------------------");
-  let abc = jwt.verify(accessToken,ACCESS_SECRET);
-  console.log(abc);
-  console.log("!!!--------------------------------------!!!");
-  req.userCookie = userCookie;
-  if (!userCookie){
-    console.log("cookie is not found");
-    req.isUser = null;
-  }else{    
-    try {
-      const {user_email,user_ph_no,user_id} = JSON.parse(userCookie);
-      // console.log(`${user_email} -- ${user_ph_no} -- ${user_id}`);
-      const isUser = await User.findOne({where:{user_email,user_ph_no,user_id}});
-      req.isUser = isUser || null;
-    } catch (error) {
-      console.error("checkUserIsLoginANDValid error is -->",error);
+  try {
+    const userCookie = req.cookies.user;
+    // const csrftokenCookie = req.cookies.Tokens;
+    // const {accessToken,refreshToken} = JSON.parse(csrftokenCookie);
+    // console.log("csrftokenCookie ---->",accessToken,"------------",refreshToken,"!!");
+    console.log("--------------------------------------");
+    // let abc = jwt.verify(accessToken,ACCESS_SECRET);
+    // console.log(abc);
+    console.log("!!!--------------------------------------!!!");
+    req.userCookie = userCookie;
+    if (!userCookie){
+      console.log("cookie is not found");
       req.isUser = null;
+    }else{    
+      try {
+        const {user_email,user_ph_no,user_id} = JSON.parse(userCookie);
+        // console.log(`${user_email} -- ${user_ph_no} -- ${user_id}`);
+        const isUser = await User.findOne({where:{user_email,user_ph_no,user_id}});
+        req.isUser = isUser || null;
+      } catch (error) {
+        console.error("checkUserIsLoginANDValid error is -->",error);
+        req.isUser = null;
+      }
     }
+    console.log("md--------------------------------!");
+  } catch (error) {
+    console.error(error);
   }
-  console.log("md--------------------------------!");
   next();
 }
 
