@@ -37,38 +37,17 @@ app.use(
     methods: ["GET", "POST", "PUT"],
   })
 );
+console.log("FORNTEND_BASE_URL ------->",FORNTEND_BASE_URL)
 app.use(cookieParser());
 const port = process.env.PORT || 3001;
 app.use(
-  [
-    "/addContect",
-    "/logOutUser/",
-    "/getAllContect/",
-    "/getUserData/",
-    "/chats/",
-    "/CheckLogin/",
-    "/getUserData/",
-    "/updateUserData/",
-  ],
+  [ "/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/", "/chats/", "/CheckLogin/", "/getUserData/", "/updateUserData/",],
   checkUserIsLoginANDValid
 );
 app.use(["/getContactData/"], checkIsUser);
 // app.use(["/chat/"],InitializeSocketWithCredential);
 export const server = http.createServer(app);
 InitializeSocket(server);
-
-async () => {
-  let m = {
-    sender_id: "user1@example.com",
-    receiver_id: "user2@example.com",
-    send_time: "2025-03-22T10:30:00Z",
-    receive_time: "2025-03-22T10:31:00Z",
-    seen_time: "2025-03-22T10:32:00Z",
-    message: "Hello, how are you?",
-    is_read: true,
-    deleted: false,
-  };
-};
 
 app.get("/", async (req, res) => {
   try {
@@ -147,6 +126,7 @@ app.post("/loginUser/", async (req, res) => {
         {
           httpOnly: false,
           secure: true,
+          sameSite: "None",
           maxAge: 3 * 24 * 60 * 60 * 1000,
         }
       );
@@ -154,6 +134,7 @@ app.post("/loginUser/", async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "Lax",
+        sameSite: "None",
         path: "/",
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
