@@ -1,13 +1,15 @@
 import { Server } from "socket.io";
 import { Message, User } from "./models.js";
+import FORNTEND_BASE_URL from "./config.js";
 
 export let user_list = [];
 export const InitializeSocket = (server, expressApp) => {
   console.log("socket---------------");
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: FORNTEND_BASE_URL,
       methods: ["GET", "POST"],
+      credentials: true
     },
   });
 
