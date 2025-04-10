@@ -402,7 +402,7 @@ app.post("/chats/", async (req, res) => {
     const AllMessage = RetrivedMessage.reverse();
     // console.log("retrived messages ---->");
     // console.log();
-    AllMessage.map((data) => console.log(data.uid));
+    // AllMessage.map((data) => console.log(data.uid));
     // console.log("retrived messages ---->!");
     const formattedMessages = AllMessage.map((msg) => ({
       uid: msg.uid,

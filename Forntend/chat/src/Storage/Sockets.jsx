@@ -15,9 +15,10 @@ export const socketConnReq = (data) => {
       return { message: "no data" }
     }
     const socket = io(`${API_BASE_URL}`, {
+      transports: ["websocket"],
+      upgrade: false,
+      withCredentials: true,
       auth: { user_email: data.user_email, user_ph_no: data.user_ph_no },
-      transports:["websocket"],
-      withCredentials:true
     });
 
     socket.on("connect", () => {
@@ -63,7 +64,7 @@ export default function SocketProvider({ children }) {
   const [messages, setmessages] = useState({});
   // settout
   let count = 0;
-  
+
   return (
     <SocketContext.Provider value={{ socket, messages, setmessages }}>
       {children}
