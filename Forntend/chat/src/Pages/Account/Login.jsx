@@ -6,7 +6,7 @@ import { AllStorage } from "../../Storage/StorageProvider";
 import { loginUser } from "../../Storage/Account";
 
 export default function Login(params) {
-  console.log('from login --> ', localStorage.getItem('user'));
+  // console.log('from login --> ', localStorage.getItem('user'));
   
   const navigate = useNavigate();
   const { register,handleSubmit,formState:{error}} = useForm();
@@ -19,12 +19,13 @@ export default function Login(params) {
       alert (response.error);
     } else {      
       if(response.login){
+        // console.log("login response -->",response,"<---response!!");
         setuserData(response.user);
-        localStorage.setItem('user',JSON.stringify(response.user));
+        // localStorage.setItem('user',JSON.stringify(response.user));
         navigate('/');
       }else{
         alert('Try With Correct Credincils!');
-        localStorage.setItem('user', JSON.stringify({}))
+        // localStorage.setItem('user', JSON.stringify({}))
       }
     }
     

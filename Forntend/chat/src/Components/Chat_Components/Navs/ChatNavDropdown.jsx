@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {Link, NavLink} from "react-router-dom"
 import { AllStorage } from "../../../Storage/StorageProvider";
 import { LogOut } from "../../../Storage/Account";
 export default function ChatNavDropdown() {
   const { userData } = useContext(AllStorage);
+  
   return (
     <div className="darkExtraPage border grid w-[200px] py-3 px-5 rounded-lg transition duration-500 ease-linear">
       {

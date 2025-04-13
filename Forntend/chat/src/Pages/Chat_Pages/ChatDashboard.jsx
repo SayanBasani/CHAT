@@ -8,7 +8,7 @@ import Setting from "./Setting";
 import { useContext, useEffect } from "react";
 import { AllStorage } from "../../Storage/StorageProvider";
 import TopNav from "../../Components/Navs/TopNav";
-import { checkIsUserValid } from "../../Storage/ApiRequest";
+import { checkIsUserValid, getUserData } from "../../Storage/ApiRequest";
 import { SocketContext } from "../../Storage/Sockets";
 import Profile from "./Profile";
 
@@ -16,10 +16,30 @@ import Profile from "./Profile";
 
 export default function ChatDashboard(params) {
   const navigate = useNavigate();
-  const { userData } = useContext(AllStorage);
-  const { socket,setmessages } = useContext(SocketContext);
+  const { userData, setuserData, userPData } = useContext(AllStorage);
+  const { socket, setmessages } = useContext(SocketContext);
   const { phoneNumber } = useParams();
   // console.log("into ChatDashboard");
+  useEffect(() => {
+    ;;
+    (
+      async () => {
+        const response = await getUserData();
+        console.log("response is --->", response);
+        if (response) {
+          setuserData(response)
+        }else{
+          navigate("/Login")
+        }
+      }
+    )();;
+  }, [])
+
+  useEffect(() => {
+    console.log("userData--->", userData);
+    console.log("userPData--->", userPData);
+
+  }, [userData, userPData])
   useEffect(() => {
     ;;
     (
@@ -41,7 +61,7 @@ export default function ChatDashboard(params) {
         console.error("socket is null");
         return;
       }
-      socket.on("connect",()=>{console.log("hello");})
+      socket.on("connect", () => { console.log("hello"); })
       socket.on("reciveMessage", (data) => {
         console.log("reciveMessage------------");
         console.log("chat dashbord --->", data);
@@ -55,8 +75,8 @@ export default function ChatDashboard(params) {
       console.error(error);
     }
     // socked related!
-  }, [socket])
-  if (userData) {
+  }, [socket,userData])
+  if (userData.isLogin) {
     return (
       <>
         <ChatTopNavs />

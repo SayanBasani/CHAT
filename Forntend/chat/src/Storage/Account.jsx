@@ -3,6 +3,7 @@ import API_BASE_URL from "../config";
 import { useContext } from "react";
 import { AllStorage } from "./StorageProvider";
 import { io } from "socket.io-client";
+import { SocketContext } from "./Sockets";
 
 export const createUser = async (data) => {
   console.log("Sending user data:", data);
@@ -57,7 +58,8 @@ export const loginUser = async (data) => {
 }
 
 export function LogOut() {
-  const { userData, setuserData, chatSidebarOptions } = useContext(AllStorage);
+  const { userData, setuserData, chatSidebarOptions,setallContectS } = useContext(AllStorage);
+  const { setmessages } = useContext(SocketContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -78,6 +80,8 @@ export function LogOut() {
 
       localStorage.clear();
       setuserData(null);
+      setallContectS(null);
+      setmessages(null);
       navigate("/Login"); // Redirect after logout
     } catch (error) {
       console.error("Network or server error:", error);

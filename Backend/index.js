@@ -15,7 +15,7 @@ import {
 } from "./middleware.js";
 import { Op, where } from "sequelize";
 
-(async () => {
+async () => {
   console.log("try to 1");
   try {
     await sequelize.sync({ alter: true });
@@ -24,7 +24,7 @@ import { Op, where } from "sequelize";
     console.error("Error in syncing User table");
     console.log(error);
   }
-})()
+};
 
 const app = express();
 export const ACCESS_SECRET = "access123";
@@ -37,11 +37,20 @@ app.use(
     methods: ["GET", "POST", "PUT"],
   })
 );
-console.log("FORNTEND_BASE_URL ------->",FORNTEND_BASE_URL)
+console.log("FORNTEND_BASE_URL ------->", FORNTEND_BASE_URL);
 app.use(cookieParser());
 const port = process.env.PORT || 3001;
 app.use(
-  [ "/addContect", "/logOutUser/", "/getAllContect/", "/getUserData/", "/chats/", "/CheckLogin/", "/getUserData/", "/updateUserData/",],
+  [
+    "/addContect",
+    "/logOutUser/",
+    "/getAllContect/",
+    "/getUserData/",
+    "/chats/",
+    "/CheckLogin/",
+    "/getUserData/",
+    "/updateUserData/",
+  ],
   checkUserIsLoginANDValid
 );
 app.use(["/getContactData/"], checkIsUser);
@@ -110,34 +119,33 @@ app.post("/loginUser/", async (req, res) => {
     const user = await User.findOne({ where: { user_email, user_password } });
 
     if (user) {
-      console.log("this is a valied user -->",user);
+      console.log("this is a valied user -->", user);
       const _userData_ = {
         user_email: user.user_email,
         user_ph_no: user.user_ph_no,
         user_id: user.user_id,
       };
       console.log("user is-->", _userData_);
-      res.cookie(
-        "userLoginCr",
-        JSON.stringify({
-          user_email: user.user_email,
-          user_ph_no: user.user_ph_no,
-        }),
-        {
-          httpOnly: false,
-          secure: true,
-          sameSite: "None",
-          maxAge: 3 * 24 * 60 * 60 * 1000,
-        }
-      );
-      res.cookie("user", JSON.stringify(_userData_), {
-        httpOnly: true,
-        secure: true,
-        sameSite: "Lax",
-        sameSite: "None",
-        path: "/",
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+      // res.cookie("userLoginCr",
+      //   JSON.stringify({
+      //     user_email: user.user_email,
+      //     user_ph_no: user.user_ph_no,
+      //   }),
+      //   {
+      //     httpOnly: false,
+      //     secure: true,
+      //     sameSite: "None",
+      //     maxAge: 3 * 24 * 60 * 60 * 1000,
+      //   }
+      // );
+      // res.cookie("user", JSON.stringify(_userData_), {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "Lax",
+      //   sameSite: "None",
+      //   path: "/",
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      // });
       const accessToken = jwt.sign(_userData_, ACCESS_SECRET, {
         expiresIn: "7d",
       });
@@ -177,33 +185,45 @@ app.post("/loginUser/", async (req, res) => {
 
 app.post("/logOutUser/", (req, res) => {
   if (!req.isUser) {
-    res.clearCookie("user", {
+    res.clearCookie("Tokens", {
       httpOnly: true,
       secure: true,
       sameSite: "Lax",
       path: "/",
     });
-    res.clearCookie("userLoginCr", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Lax",
-      path: "/",
-    });
+    // res.clearCookie("user", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "Lax",
+    //   path: "/",
+    // });
+    // res.clearCookie("userLoginCr", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "Lax",
+    //   path: "/",
+    // });
     res.send({ message: "There is somthing Wrong!", isLogout: true });
   } else {
     // console.log("it is else ");
-    res.clearCookie("user", {
+    res.clearCookie("Tokens", {
       httpOnly: true,
       secure: true,
       sameSite: "Lax",
       path: "/",
     });
-    res.clearCookie("userLoginCr", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Lax",
-      path: "/",
-    });
+    // res.clearCookie("user", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "Lax",
+    //   path: "/",
+    // });
+    // res.clearCookie("userLoginCr", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "Lax",
+    //   path: "/",
+    // });
     res.send({ isLogout: true, message: "Successfully logged out!" });
   }
 });
@@ -350,7 +370,8 @@ app.post("/getContactData/", async (req, res) => {
 app.post("/chats/", async (req, res) => {
   // console.log("chat-----------------------");
   try {
-    const { user_id, user_ph_no } = JSON.parse(req.userCookie);
+    // const { user_id, user_ph_no } = JSON.parse(req.userCookie);
+    const { user_id, user_ph_no } = req.isUser;
     const reciver_phoneNumber = req.body.phoneNumber;
     // const lastMessageId = req.body.lastMessageId;
     const lastMessageId = req.body.lastMessageId
@@ -469,16 +490,16 @@ app.post("/getUserData/", async (req, res) => {
       // console.log("req.body.user_ph_no--->",req.body.user_ph_no,"user_ph_no-->",user_ph_no);
       // if(req.body.user_email === user_email && req.body.user_ph_no === user_ph_no){
       // console.log("response is->>",user_name,user_email,user_ph_no);
-      const respData = { user_name, user_email, user_ph_no };
+      const respData = { user_name, user_email, user_ph_no,isLogin:true };
       // console.log("respData ---->", respData);
       return res.send(respData);
       // }
     } else {
-      return res.send({ message: "Somthing Wrong !" });
+      return res.send({ message: "Somthing Wrong !",isLogin:false });
     }
   } catch (error) {
     // console.log("somthing Error Occers");
-    return res.send({ message: "Internal Server Error" });
+    return res.send({ message: "Internal Server Error",isLogin:false });
   }
 });
 

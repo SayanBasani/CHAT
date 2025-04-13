@@ -19,6 +19,15 @@ html.dark .darkDarkTogelBtn {
   background-color: rgb(237, 239, 240);
   color: black;
 }
+
+.darkSubSideNav {
+  background-color: rgb(237, 239, 240);
+  color: black;
+}
+html.dark .darkSubSideNav {
+  background-color: rgb(55, 81, 100);
+  color: black;
+}
 html.dark .darkExtraPage {
   background-color: rgb(12, 10, 36);
   color: white;
@@ -105,3 +114,4 @@ html.dark .cardBoxText{
 .addNewContect{
   animation: bottomToUp 0.25s ease-in-out 1;
 }
+

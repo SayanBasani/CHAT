@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { getAllContect } from "./Account";
+import { getUserData } from "./ApiRequest";
 export const AllStorage = createContext();
 
 export default function StorageProvider({ children }) {
@@ -10,12 +11,19 @@ export default function StorageProvider({ children }) {
       .find(row => row.startsWith(name + "="))
       ?.split("=")[1] || null;
   }
-  const [userData, setuserData] = useState(() => {
+  const [userData, setuserData] = useState(async () => {
+    // isUser-->",{user_email: '1@g.com', user_ph_no: '1', user_id: '9a1f7fe9-266f-4211-992b-8b6b9bebdcce'});
     // const userLoginCr = localStorage.getItem('user');
-    const  isUser = JSON.parse(decodeURIComponent(getCookie('userLoginCr')));
-    // console.log("isUser-->",isUser);
-    
-    return isUser ? isUser : null;
+    // const  isUser = JSON.parse(decodeURIComponent(getCookie('userLoginCr')));
+    // try {
+    //   const isUser = await getUserData();
+    //   console.log("the responseData for user is ->>>",isUser);
+    //   console.log("isUser-->",isUser);      
+    //   return isUser ? isUser : null;
+    // } catch (error) {
+    //   return;
+    // }
+
   });
   const [allContectS, setallContectS] = useState(null);
   const [chatSideNavwidth,setchatSideNavwidth]=useState(false);
