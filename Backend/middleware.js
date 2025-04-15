@@ -9,7 +9,7 @@ export const checkUserIsLoginANDValid = async (req, res, next) => {
   try {
     // const userCookie = req.cookies.user;
     const JwttokenCookie = req.cookies.Tokens;
-    console.log("the jwt retreved is --->",JwttokenCookie);
+    console.log("the jwt retreved is --->", JwttokenCookie);
     const { accessToken, refreshToken } = JSON.parse(JwttokenCookie);
     console.log(
       "JwttokenCookie ---->",
