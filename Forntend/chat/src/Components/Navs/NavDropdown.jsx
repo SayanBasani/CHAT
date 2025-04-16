@@ -6,7 +6,7 @@ export default function NavDropdown() {
   const {userData, setuserData} = useContext(AllStorage);  
   return (
   <>
-    <div className="darkExtraPage border grid w-50 py-3 px-5 rounded-lg transition duration-500 ease-linear">
+    <div className="darkTopNav border grid w-50 py-3 px-5 rounded-lg transition duration-500 ease-linear">
       <Link to={'/Home'} className="hover:bg-gray-200  hover:text-black p-1 flex justify-center rounded-md w-full hover:bg-[rgb(238,235,235)]">Home</Link>
       <Link to={'/Chat'} className="hover:bg-gray-200  hover:text-black p-1 flex justify-center rounded-md w-full">Chat</Link>
       

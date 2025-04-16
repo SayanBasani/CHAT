@@ -13,6 +13,7 @@ import Calls from './Pages/Chat_Pages/Calls.jsx';
 import Setting from './Pages/Chat_Pages/Setting.jsx';
 import SocketProvider from './Storage/Sockets.jsx';
 import Profile from './Pages/Chat_Pages/Profile.jsx';
+import Theme from './Pages/Chat_Pages/Settings/Theme.jsx';
 const rout = createBrowserRouter([
   {
     path: '/',
@@ -24,7 +25,8 @@ const rout = createBrowserRouter([
       { path: "/Contects", element: <Contects /> },
       { path: "/Calls", element: <Calls /> },
       { path: "/Setting", element: <Setting /> },
-      { path: "/Profile", element: <Profile /> }
+      { path: "/Profile", element: <Profile /> },
+      {path: "/Theme",element: <Theme />},
     ]
   },
   {
@@ -43,10 +45,7 @@ const rout = createBrowserRouter([
     path: '/Singup',
     element: <Singup />
   },
-  // {
-  //   path: "/Profile",
-  //   element: <Profile />
-  // }
+  
 
 ])
 

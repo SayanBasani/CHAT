@@ -1,12 +1,31 @@
 @import "tailwindcss";
+
+/* this is for dinamicly change the theme color */
+html.dark {
+  --mainbar-bg: rgb(12, 10, 36); /* fallback */
+  --body-bg: rgb(30, 43, 62); /* fallback */
+}
+
 html.dark body {
-  background-color: rgb(30, 43, 62);
+  background-color: var(--body-bg);
   color: white;
 }
+
+html.dark .darkTopNav {
+  background-color: var(--mainbar-bg);
+  color: white;
+}
+/* End {for dinamicly change the theme color}!! */
+
+/* 
+
 html.dark .darkTopNav {
   background-color: rgb(12, 10, 36);
   color: white;
 }
+ */
+
+
 html.dark .darkDarkTogelBtn {
   /* background-color: rgb(12, 10, 36) ; */
   color: white;
@@ -115,3 +134,14 @@ html.dark .cardBoxText{
   animation: bottomToUp 0.25s ease-in-out 1;
 }
 
+/* className="transition-transform hover:scale-105 hover:border hover:border-[rgb(132,154,163)] text-xl" */
+.text-style-hover{
+  border-radius: 12px;
+  display: block;
+  padding-inline: 1rem;
+  padding: 8px;
+}
+.text-style-hover:hover{
+  scale: 105%;
+  border: 1px solid rgb(132,154,163);
+}

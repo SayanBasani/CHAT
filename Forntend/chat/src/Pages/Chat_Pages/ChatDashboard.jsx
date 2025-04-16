@@ -11,6 +11,7 @@ import TopNav from "../../Components/Navs/TopNav";
 import { checkIsUserValid, getUserData } from "../../Storage/ApiRequest";
 import { SocketContext } from "../../Storage/Sockets";
 import Profile from "./Profile";
+import Theme from "./Settings/Theme";
 
 // import 
 
@@ -25,10 +26,10 @@ export default function ChatDashboard(params) {
     (
       async () => {
         const response = await getUserData();
-        console.log("response is --->", response);
+        // console.log("response is --->", response);
         if (response) {
           setuserData(response)
-        }else{
+        } else {
           navigate("/Login")
         }
       }
@@ -36,16 +37,11 @@ export default function ChatDashboard(params) {
   }, [])
 
   useEffect(() => {
-    console.log("userData--->", userData);
-    console.log("userPData--->", userPData);
-
-  }, [userData, userPData])
-  useEffect(() => {
     ;;
     (
       async (params) => {
         const checkIsUserResponse = await checkIsUserValid();
-        // console.log(checkIsUserResponse);
+        // console.log("checkIsUserResponse-->", checkIsUserResponse);
         if (checkIsUserResponse.isLogin) {
           navigate("/Login");
         }
@@ -61,21 +57,23 @@ export default function ChatDashboard(params) {
         console.error("socket is null");
         return;
       }
-      socket.on("connect", () => { console.log("hello"); })
+      socket.on("connect", () => {
+        // console.log("socket is connected"); 
+      })
       socket.on("reciveMessage", (data) => {
-        console.log("reciveMessage------------");
-        console.log("chat dashbord --->", data);
+        // console.log("reciveMessage--------------=");
+        // console.log("chat dashbord --->", data);
         // console.log(typeof (data));
         // setmessages((prevMsg) => ({
         //   ...prevMsg, [phoneNumber]: [...prevMsg[phoneNumber], data]
         // }))
-        console.log("reciveMessage------------!");
+        // console.log("reciveMessage------------!--=");
       });
     } catch (error) {
       console.error(error);
     }
     // socked related!
-  }, [socket,userData])
+  }, [socket, userData])
   if (userData.isLogin) {
     return (
       <>
@@ -93,8 +91,9 @@ export default function ChatDashboard(params) {
                 }
                 <Route path="/Contects/" element={<Contects />} />
                 <Route path="/Calls/" element={<Calls />} />
-                <Route path="/Setting/" element={<Setting />} />
                 <Route path="/Profile/" element={<Profile />} />
+                <Route path="/Setting/" element={<Setting />} />
+                <Route path="/Theme/" element={<Theme />} />
               </Routes>
             </div>
           </div>

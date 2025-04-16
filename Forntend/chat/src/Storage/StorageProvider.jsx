@@ -11,30 +11,15 @@ export default function StorageProvider({ children }) {
       .find(row => row.startsWith(name + "="))
       ?.split("=")[1] || null;
   }
-  const [userData, setuserData] = useState(async () => {
-    // isUser-->",{user_email: '1@g.com', user_ph_no: '1', user_id: '9a1f7fe9-266f-4211-992b-8b6b9bebdcce'});
-    // const userLoginCr = localStorage.getItem('user');
-    // const  isUser = JSON.parse(decodeURIComponent(getCookie('userLoginCr')));
-    // try {
-    //   const isUser = await getUserData();
-    //   console.log("the responseData for user is ->>>",isUser);
-    //   console.log("isUser-->",isUser);      
-    //   return isUser ? isUser : null;
-    // } catch (error) {
-    //   return;
-    // }
-
-  });
+  const [userData, setuserData] = useState(async () => {});
   const [allContectS, setallContectS] = useState(null);
   const [chatSideNavwidth,setchatSideNavwidth]=useState(false);
   const [messageLoading,setMessageLoading]=useState(false);
   const [userPData,setuserPData]=useState(null);
+  const [_mainbarColor,setmainbarColor]=useState(null);
+  const [_bgColor,setbgColor]=useState(null);
 
-  const chatSidebarOptions = [
-    { 'name': 'Chat', 'icon_name': 'bi-chat' },
-    { 'name': 'Contects', 'icon_name': 'bi-person' },
-    { 'name': 'Call', 'icon_name': 'bi-telephone' },
-  ]
+  const chatSidebarOptions = [{ 'name': 'Chat', 'icon_name': 'bi-chat' },{ 'name': 'Contects', 'icon_name': 'bi-person' },{ 'name': 'Call', 'icon_name': 'bi-telephone' },]
 
   useEffect(() => {
     ;; (async () => {
@@ -53,11 +38,20 @@ export default function StorageProvider({ children }) {
     })();;
   }, [, userData])
 
+  useEffect(() => {
+    console.log("changed color is :->",_mainbarColor);
+    document.documentElement.style.setProperty('--mainbar-bg', _mainbarColor);
+  }, [_mainbarColor]);
+  useEffect(() => {
+    console.log("changed color is :->",_bgColor);
+    document.documentElement.style.setProperty('--body-bg', _bgColor);
+  }, [_bgColor]);
+  
   return (
     <AllStorage.Provider value={{
       userData, setuserData, chatSidebarOptions, allContectS, setallContectS,
       chatSideNavwidth,setchatSideNavwidth,messageLoading,setMessageLoading,
-      userPData,setuserPData,
+      userPData,setuserPData,_bgColor,setbgColor,_mainbarColor,setmainbarColor,
     }}>
       {children}
     </AllStorage.Provider>

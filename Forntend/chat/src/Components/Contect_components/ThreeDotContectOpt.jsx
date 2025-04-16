@@ -4,7 +4,7 @@ export default function ThreeDotContectOpt({ contect, index }) {
   console.log('contect :>> ', contect);
   const navigate = useNavigate();
   return (<>
-    <ul className="darkExtraPage border rounded-md py-3 px-2 flex flex-col justify-center gap-2">
+    <ul className="darkTopNav border rounded-md py-3 px-2 flex flex-col justify-center gap-2">
       <button className="hover:text-blue-500 cursor-pointer" onClick={() => {
         console.log("clicked");
         navigate(`/Chat/${contect}`)

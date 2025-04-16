@@ -64,7 +64,7 @@ export default function Add_new_Contect_form() {
   }
   return (<>
     <div ref={addContectBodyRef} className="bg-white/0 backdrop-blur-sm addNewContect hidden Add_new_Contect_form justify-center items-center absolute top-0 left-0 w-full h-full flex">
-      <form ref={addContectFormRef} onSubmit={handleSubmit(onSubmit)} className="contect_form darkExtraPage m-auto  grid w-80 max-sm:w-60 max-sm:p-5 p-10 bg-gray-100 rounded-2xl gap-5">
+      <form ref={addContectFormRef} onSubmit={handleSubmit(onSubmit)} className="contect_form darkTopNav m-auto  grid w-80 max-sm:w-60 max-sm:p-5 p-10 bg-gray-100 rounded-2xl gap-5">
         <h1 className="text-2xl m-auto">Add Contects</h1>
         {/* <label htmlFor="" className="grid border rounded-xl p-1"> */}
         <label htmlFor="" className={`${errors.ContactName && "text-red-700 border-2"} grid border rounded-xl p-1`}>

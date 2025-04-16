@@ -14,11 +14,17 @@ export const socketConnReq = (data) => {
     if (!data) {
       return { message: "no data" }
     }
+    const RECONNECTION_ATTEMPTS = 5;
+    const RECONNECTION_DELAY = 3000;
     const socket = io(`${API_BASE_URL}`, {
       transports: ["websocket"],
       upgrade: false,
       withCredentials: true,
       auth: { user_email: data.user_email, user_ph_no: data.user_ph_no },
+      // for automatic reconnect try
+      reconnection: true,
+      reconnectionAttempts: RECONNECTION_ATTEMPTS,
+      reconnectionDelay: RECONNECTION_DELAY,
     });
 
     socket.on("connect", () => {
@@ -43,16 +49,22 @@ export default function SocketProvider({ children }) {
     let socketInstance;
     if (userData) {
       socketInstance = socketConnReq(userData);
-      socketInstance.on("connect", () => {
-        console.log(`socket id --> ${socketInstance.id}`);
-      })
-      setsocket(socketInstance);
+      if (socketInstance) {
+        socketInstance.on("connect", () => {
+          console.log(`socket id --> ${socketInstance.id}`);
+        })
+        setsocket(socketInstance);
+      }
+      else {
+        console.error("Failed to initialize socket.");
+      }
     } else {
-      console.log("for socket you have to login");
+      // console.log("for socket you have to login");
       setsocket(null);
     }
     return () => {
       if (socketInstance) {
+        socketInstance.off();
         socketInstance.disconnect();
         console.log("Socket disconnected");
       }
@@ -63,7 +75,6 @@ export default function SocketProvider({ children }) {
   // const [messages, setmessages] = useState([]);
   const [messages, setmessages] = useState({});
   // settout
-  let count = 0;
 
   return (
     <SocketContext.Provider value={{ socket, messages, setmessages }}>

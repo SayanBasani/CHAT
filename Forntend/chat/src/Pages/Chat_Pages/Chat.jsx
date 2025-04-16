@@ -20,11 +20,12 @@ export default function Chat(params) {
     setIsFetching(true);
     setMessageLoading(true);
     try {
-      const lastMessageId = messages[phoneNumber]?.[0]?.uid || null;
+      // const lastMessageId = messages[phoneNumber]?.[0]?.uid || null;
+      const lastMessageId = Array.isArray(messages[phoneNumber]) ? messages[phoneNumber][0]?.uid : null;
       const responseMsg = await getMessagesF({ phoneNumber, lastMessageId });
 
       if (!responseMsg || !responseMsg.AllMessage?.length) {
-        console.error("Something went wrong");
+        console.log("i think it is first message");
         return;
       }
 

@@ -58,7 +58,7 @@ export const loginUser = async (data) => {
 }
 
 export function LogOut() {
-  const { userData, setuserData, chatSidebarOptions,setallContectS } = useContext(AllStorage);
+  const { setuserData,setallContectS } = useContext(AllStorage);
   const { setmessages } = useContext(SocketContext);
   const navigate = useNavigate();
 

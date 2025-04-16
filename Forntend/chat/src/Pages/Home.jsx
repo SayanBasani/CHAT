@@ -21,7 +21,6 @@ export default function Home() {
   return <>
   <div className="">
     <TopNav/>
-    Hello
     <div className="flex justify-center gap-3">
       <button onClick={handleGetUserList} className="border px-3 py-2 text-xl get_all_user_list">user list</button>
       <button onClick={handleGetIdList} className="border px-3 py-2 text-xl get_all_user_list_id">user list of id</button>
