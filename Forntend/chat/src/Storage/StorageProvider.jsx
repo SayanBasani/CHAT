@@ -18,6 +18,7 @@ export default function StorageProvider({ children }) {
   const [userPData,setuserPData]=useState(null);
   const [_mainbarColor,setmainbarColor]=useState(null);
   const [_bgColor,setbgColor]=useState(null);
+  const [_fontColor,setfontColor]=useState(null);
 
   const chatSidebarOptions = [{ 'name': 'Chat', 'icon_name': 'bi-chat' },{ 'name': 'Contects', 'icon_name': 'bi-person' },{ 'name': 'Call', 'icon_name': 'bi-telephone' },]
 
@@ -38,6 +39,14 @@ export default function StorageProvider({ children }) {
     })();;
   }, [, userData])
 
+  useEffect(()=>{
+    setmainbarColor(()=>{
+      return localStorage.getItem("mainbarColor")
+    });
+    setbgColor(()=>{
+      return localStorage.getItem("bgColor")
+    });
+  },[])
   useEffect(() => {
     console.log("changed color is :->",_mainbarColor);
     document.documentElement.style.setProperty('--mainbar-bg', _mainbarColor);
@@ -46,12 +55,17 @@ export default function StorageProvider({ children }) {
     console.log("changed color is :->",_bgColor);
     document.documentElement.style.setProperty('--body-bg', _bgColor);
   }, [_bgColor]);
+  useEffect(() => {
+    console.log("text color is :->",_fontColor);
+    document.documentElement.style.setProperty('--font-color', _fontColor);
+  }, [_fontColor]);
   
   return (
     <AllStorage.Provider value={{
       userData, setuserData, chatSidebarOptions, allContectS, setallContectS,
       chatSideNavwidth,setchatSideNavwidth,messageLoading,setMessageLoading,
       userPData,setuserPData,_bgColor,setbgColor,_mainbarColor,setmainbarColor,
+      _fontColor,setfontColor,
     }}>
       {children}
     </AllStorage.Provider>

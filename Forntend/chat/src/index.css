@@ -4,11 +4,12 @@
 html.dark {
   --mainbar-bg: rgb(12, 10, 36); /* fallback */
   --body-bg: rgb(30, 43, 62); /* fallback */
+  --font-color: rgb(255, 255, 255);
 }
 
 html.dark body {
   background-color: var(--body-bg);
-  color: white;
+  color: var(--font-color);
 }
 
 html.dark .darkTopNav {
