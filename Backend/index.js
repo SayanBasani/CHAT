@@ -34,7 +34,7 @@ app.use(
   cors({
     origin: FORNTEND_BASE_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 console.log("FORNTEND_BASE_URL ------->", FORNTEND_BASE_URL);
@@ -50,6 +50,7 @@ app.use(
     "/CheckLogin/",
     "/getUserData/",
     "/updateUserData/",
+    "/deleteContect/",
   ],
   checkUserIsLoginANDValid
 );
@@ -70,11 +71,7 @@ app.get("/", async (req, res) => {
       whereCondition.uid = { [Op.lt]: lastMessageId };
     }
 
-    const messages = await User.findAll({
-      // where: whereCondition,
-      // order: [["send_time", "DESC"]],
-      // limit: parseInt(limit),
-    });
+    const messages = await User.findAll({});
 
     res.json(messages);
   } catch (error) {
@@ -192,18 +189,6 @@ app.post("/logOutUser/", (req, res) => {
       sameSite: "Lax",
       path: "/",
     });
-    // res.clearCookie("user", {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "Lax",
-    //   path: "/",
-    // });
-    // res.clearCookie("userLoginCr", {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "Lax",
-    //   path: "/",
-    // });
     res.send({ message: "There is somthing Wrong!", isLogout: true });
   } else {
     // console.log("it is else ");
@@ -213,18 +198,6 @@ app.post("/logOutUser/", (req, res) => {
       sameSite: "Lax",
       path: "/",
     });
-    // res.clearCookie("user", {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "Lax",
-    //   path: "/",
-    // });
-    // res.clearCookie("userLoginCr", {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "Lax",
-    //   path: "/",
-    // });
     res.send({ isLogout: true, message: "Successfully logged out!" });
   }
 });
@@ -252,14 +225,11 @@ app.post("/addContect/", async (req, res) => {
   // console.log("this is addContect.--->", req.originalUrl);
   const { ContactEmail, ContactName, phoneNumber } = req.body;
   if (!ContactName || !phoneNumber) {
-    req.send({
-      message: "please provide The Fields",
-      contectCreated: false,
-    });
+    return req.send({ message: "please provide The Fields", contectCreated: false });
   }
   try {
     if (req.isUser) {
-      const isExist = await Contact.findAndCountAll({
+      const isExist = await Contact.findOne({
         where: {
           user_id: req.isUser.user_id,
           phoneNumber: req.body.phoneNumber,
@@ -267,9 +237,14 @@ app.post("/addContect/", async (req, res) => {
       });
 
       if (isExist.count > 0) {
-        // console.log("the count is ->", isExist.count);
-
-        return res.send({ message: "Already exists", error: "Already exists" });
+        console.log("the count is ->", isExist);
+        isExist.Deleted = true;
+        await isExist.save();
+        return res.send({
+          message: "Make it reexists",
+          error: "Already exists",
+        });
+        // return res.send({ message: "Already exists", error: "Already exists" });
       }
       let createContectcred = {
         user_id: req.isUser.user_id,
@@ -288,11 +263,7 @@ app.post("/addContect/", async (req, res) => {
         contectCreated: true,
       });
     } else {
-      // console.log("you are not a valied user");
-      res.send({
-        message: "you are not a valied user",
-        contectCreated: false,
-      });
+      res.send({ message: "you are not a valied user", contectCreated: false });
     }
   } catch (error) {
     console.error(error);
@@ -319,7 +290,7 @@ app.post("/getAllContect/", async (req, res) => {
       });
       // console.log(response);
       // const sendableData = response.filter
-      // console.log("getAllContect --------------------------------!");
+      console.log("getAllContect --------------------------------!");
       res.send({ message: "it is a valied user", allContecet: response });
     } else {
       res.send({ message: "somthing problem,Login" });
@@ -366,6 +337,29 @@ app.post("/getContactData/", async (req, res) => {
     res.send(error);
   }
   // console.log("getUserData------------------!");
+});
+
+app.delete("/deleteContect/", async (req, res) => {
+  try {
+    console.log("deletecontect ---------------------");
+    const { phoneNumber } = req.body;
+    if (!phoneNumber) {
+      return res.send({ message: "missng Phone Number",complet:false });
+    }
+
+    const contact = await Contact.findOne({ where: { phoneNumber ,Deleted: false } });
+
+    if (!contact) {
+      return res.status(404).json({ message: "Contact not found" ,complet:false});
+    }
+    contact.Deleted = true;
+    console.log("contact-->",contact);
+    await contact.save();
+
+    return res.status(200).json({ message: "Contact is Sucessfully deleted",complet:true });
+  } catch (error) {
+    res.send({ message: "Server error", error });
+  }
 });
 
 app.post("/chats/", async (req, res) => {
@@ -491,16 +485,16 @@ app.post("/getUserData/", async (req, res) => {
       // console.log("req.body.user_ph_no--->",req.body.user_ph_no,"user_ph_no-->",user_ph_no);
       // if(req.body.user_email === user_email && req.body.user_ph_no === user_ph_no){
       // console.log("response is->>",user_name,user_email,user_ph_no);
-      const respData = { user_name, user_email, user_ph_no,isLogin:true };
+      const respData = { user_name, user_email, user_ph_no, isLogin: true };
       // console.log("respData ---->", respData);
       return res.send(respData);
       // }
     } else {
-      return res.send({ message: "Somthing Wrong !",isLogin:false });
+      return res.send({ message: "Somthing Wrong !", isLogin: false });
     }
   } catch (error) {
     // console.log("somthing Error Occers");
-    return res.send({ message: "Internal Server Error",isLogin:false });
+    return res.send({ message: "Internal Server Error", isLogin: false });
   }
 });
 

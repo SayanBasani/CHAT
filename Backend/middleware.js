@@ -9,20 +9,14 @@ export const checkUserIsLoginANDValid = async (req, res, next) => {
   try {
     // const userCookie = req.cookies.user;
     const JwttokenCookie = req.cookies.Tokens;
-    console.log("the jwt retreved is --->", JwttokenCookie);
+    // console.log("the jwt retreved is --->", JwttokenCookie);
+    if(JwttokenCookie == undefined){
+      console.log("no data found jwtToken related !!");
+      return 
+    }
     const { accessToken, refreshToken } = JSON.parse(JwttokenCookie);
-    console.log(
-      "JwttokenCookie ---->",
-      accessToken,
-      "------------",
-      refreshToken,
-      "!!"
-    );
-    console.log("--------------------------------------");
+    // console.log( "JwttokenCookie ---->", accessToken, "------------", refreshToken, "!!" );
     let userJwtCookie = jwt.verify(accessToken, ACCESS_SECRET);
-    console.log("data about jwt");
-    console.log(userJwtCookie);
-    console.log("data about jwt!");
     console.log("!!!--------------------------------------!!!");
     req.userJwtCookie = userJwtCookie;
     if (!JwttokenCookie) {
@@ -37,7 +31,7 @@ export const checkUserIsLoginANDValid = async (req, res, next) => {
           where: { user_email, user_ph_no, user_id },
         });
         req.isUser = isUser || null;
-        console.log("the founded user is", isUser);
+        // console.log("the founded user is", isUser);
       } catch (error) {
         console.error("checkUserIsLoginANDValid error is -->", error);
         req.isUser = null;

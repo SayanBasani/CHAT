@@ -27,10 +27,10 @@ export default function Setting(params) {
           {/* <ul className="rounded-xl transition-transform block px-4 py-2 hover:scale-105 hover:border hover:border-[rgb(132,154,163)] text-xl"> */}
           <ul ref={on_off_optsref} className="px-2 pl-4 hidden ">
             <li className="text-style-hover transition-transform">
-              <Link to={"/profile"} className="">Password</Link>
+              <Link to={"/ComingSoon"} className="block">Password</Link>
             </li>
             <li className="text-style-hover transition-transform">
-              <Link to={"/profile"} className="">Local Password</Link>
+              <Link to={"/ComingSoon"} className="block">Local Password</Link>
             </li>
           </ul>
         </div>

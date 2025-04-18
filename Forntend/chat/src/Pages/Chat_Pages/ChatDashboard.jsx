@@ -12,6 +12,7 @@ import { checkIsUserValid, getUserData } from "../../Storage/ApiRequest";
 import { SocketContext } from "../../Storage/Sockets";
 import Profile from "./Profile";
 import Theme from "./Settings/Theme";
+import ComingSoon from "../ComingSoon";
 
 // import 
 
@@ -81,7 +82,7 @@ export default function ChatDashboard(params) {
         <div className="flex gap-3 absolute top-0 z-0 w-screen">
           <ChatSideNav />
           <div className="z-0 absolute top-0 left-0 right-0 bottom-0 mt-14 ml-14 flex">
-            <div className="w-full h-full">
+            <div className="w-full h-full overflow-auto">
               <Routes>
                 {
                   phoneNumber ?
@@ -94,6 +95,7 @@ export default function ChatDashboard(params) {
                 <Route path="/Profile/" element={<Profile />} />
                 <Route path="/Setting/" element={<Setting />} />
                 <Route path="/Theme/" element={<Theme />} />
+                <Route path="/ComingSoon/" element={<ComingSoon />} />
               </Routes>
             </div>
           </div>

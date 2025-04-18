@@ -81,7 +81,7 @@ export const getMessagesF = async(data,lastMessageId=90 ) => {
 };
 
 export const getUserData = async (data) =>{
-  console.log("get user data -->",data);
+  // console.log("get user data -->",data);
   try {
     const response = await fetch(`${API_BASE_URL}getUserData/`,{
       method:"POST",
@@ -115,6 +115,25 @@ export const updateUserData = async(data) => {
     const responseData = await response.json();
     console.log("responseData --->" ,responseData);
     console.log("/changeUserData/--------->!");
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+}
+
+export const deleteUserContect = async(data) => {
+  try {
+    console.log("/changeUserData/--------->",data);
+    const response = await fetch(`${API_BASE_URL}deleteContect/`,{
+      method:"DELETE",
+      credentials:"include",
+      headers:{"Content-Type": "application/json",},
+      body:JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    // console.log("responseData --->" ,responseData);
+    return responseData
+    // console.log("/changeUserData/--------->!");
   } catch (error) {
     console.error(error);
     return 0;

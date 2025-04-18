@@ -54,11 +54,11 @@ html.dark .darkExtraPage {
 }
 .chatSubNav {
   background: #ece9e9;
-  border: 1px solid white;
+  /* border: 1px solid white; */
 }
 html.dark .chatSubNav {
   background: #130c28;
-  border: 1px solid rgb(0, 0, 0);
+  /* border: 1px solid rgb(0, 0, 0); */
 }
 /* for style and scroll of the tetarea field  */
 

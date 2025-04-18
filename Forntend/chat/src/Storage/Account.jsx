@@ -129,6 +129,7 @@ export const getAllContect = async (data) => {
       body: JSON.stringify(data),
     })
     const responseData = await response.json();
+    console.log("the response is :---",responseData);
     if (!response.ok) {
       console.error("Error response from server:", responseData);
       return { error: responseData.error || "Something went wrong" };

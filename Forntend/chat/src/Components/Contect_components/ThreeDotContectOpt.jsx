@@ -1,6 +1,34 @@
 import { useNavigate } from "react-router";
+import { deleteUserContect } from "../../Storage/ApiRequest";
+import { getAllContect } from "../../Storage/Account";
+import { useContext } from "react";
+import { AllStorage } from "../../Storage/StorageProvider";
 
 export default function ThreeDotContectOpt({ contect, index }) {
+  const { allContectS, setallContectS } = useContext(AllStorage);
+  const handleGetAllContectRequest = async () => {
+      console.log(allContectS);
+      try {
+        let responseAllContect = await getAllContect();
+        if (responseAllContect.allContecet) {
+          setallContectS(responseAllContect.allContecet);
+          console.log("Updating the Contacts");
+        } else {
+          console.log("No response received");
+        }
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
+    };
+  const handleDeleteContect = async()=>{
+    const deleteContctResponse = await deleteUserContect({phoneNumber:contect});
+    console.log("the delete response is --->",deleteContctResponse);
+    if(!deleteContctResponse){console.log("error on delete contect");}
+    console.log("sucessfully delete");
+    if(deleteContctResponse.complet){
+      handleGetAllContectRequest()
+    }
+  }
   console.log('contect :>> ', contect);
   const navigate = useNavigate();
   return (<>
@@ -11,7 +39,7 @@ export default function ThreeDotContectOpt({ contect, index }) {
       }}>
         Message
       </button>
-      <button className="flex justify-center hover:text-blue-500 cursor-pointer">Delete</button>
+      <button onClick={handleDeleteContect} className="flex justify-center hover:text-blue-500 cursor-pointer">Delete</button>
     </ul>
   </>)
 };
