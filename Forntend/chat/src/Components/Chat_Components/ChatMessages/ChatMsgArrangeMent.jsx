@@ -11,7 +11,7 @@ export default function ChatMsgArrangeMent(params) {
   const {userData} = useContext(AllStorage);
   return (<>
     <div>
-      {
+      {Array.isArray(messages?.[phoneNumber]) &&
         messages[phoneNumber]?.map((element, index) =>
           element.sender_phoneNumber == userData.user_ph_no ? (
             <Chat_send key={index} message={element} />

@@ -7,6 +7,7 @@ import sequelize from "./DB.js";
 import cookieParser from "cookie-parser";
 import FORNTEND_BASE_URL from "./config.js";
 import { User, Message, Contact } from "./models.js";
+import bcrypt from "bcrypt";
 import { InitializeSocket } from "./sockets.js";
 import {
   checkIsUser,
@@ -82,10 +83,14 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/create/", async (req, res) => {
+  console.log("create-------------------");
+  const {user_name, user_email, user_ph_no, user_password} = req.body;
   // console.log(req.body);
-  // console.log("create-------------------");
+  const hashedPassword = await bcrypt.hash(user_password, 10);
+  const data = {user_name, user_email, user_ph_no, user_password:hashedPassword}
+  console.log("data is -->",data,"pass-->",user_password);
   try {
-    const user = await User.create(req.body);
+    const user = await User.create(data);
     // console.log("...............");
     res.send({
       accout: {
@@ -112,10 +117,13 @@ app.post("/loginUser/", async (req, res) => {
   if (!user_email || !user_password) {
     return res.status(400).json({ error: "Email and password are required!" });
   }
-  try {
-    const user = await User.findOne({ where: { user_email, user_password } });
+  // try {
+    const user = await User.findOne({ where: { user_email } });
+    // const user = await User.findOne({ where: { user_email, user_password } });
 
-    if (user) {
+    if (!user) { return res.status(404).json({ error: 'User not found' }); }
+    const isMatched = await bcrypt.compare(user_password ,user.user_password)
+    if (isMatched) {
       console.log("this is a valied user -->", user);
       const _userData_ = {
         user_email: user.user_email,
@@ -175,10 +183,10 @@ app.post("/loginUser/", async (req, res) => {
     } else {
       res.status(401).json({ error: "Invalid email or password!" });
     }
-  } catch (error) {
-    // console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  // } catch (error) {
+  //   // console.error(error);
+  //   res.status(500).json({ error: "Internal Server Error" });
+  // }
 });
 
 app.post("/logOutUser/", (req, res) => {
