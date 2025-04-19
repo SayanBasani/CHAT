@@ -128,6 +128,11 @@ export default function SocketProvider({ children }) {
     }
   }, [allContectS, socket]);
 
+  // useEffect(()=>{
+  //   setInterval(() => {
+  //     socket?console.log("socket.connected-->",socket.connected):console.log("socket->>",socket);
+  //   }, 4000);
+  // })
   return (
     <SocketContext.Provider value={{ socket, messages, setmessages,trackOnline,settrackOnline }}>
       {children}

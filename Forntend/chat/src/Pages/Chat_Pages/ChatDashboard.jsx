@@ -80,7 +80,9 @@ export default function ChatDashboard(params) {
       <>
         <ChatTopNavs />
         <div className="flex gap-3 absolute top-0 z-0 w-screen">
-          <ChatSideNav />
+          <div className="flex gap-1">
+            <ChatSideNav />
+          </div>
           <div className="z-0 absolute top-0 left-0 right-0 bottom-0 mt-14 ml-14 flex">
             <div className="w-full h-full overflow-auto">
               <Routes>

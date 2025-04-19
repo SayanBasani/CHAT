@@ -48,7 +48,7 @@ export default function ChatSideNav() {
 
   return (
     <>
-      <div className={`${chatSideNavwidth ? "w-40" : "w-14"} z-10 pt-18 h-screen w-14 darkTopNav flex flex-col gap-3 p-4 overflow-hidden`}
+      <div className={`${chatSideNavwidth ? "w-40" : "w-14"} z-10 pt-18 h-screen w-14 darkTopNav flex flex-col gap-y-3 p-4 overflow-hidden`}
       >
         <NavLink ref={chatMessageRef} to={"/chat/"} className={({ isActive }) => `${isActive ? "text-blue-500" : ""} flex gap-4 items-center`} >
           <i className="bi bi-chat text-2xl"></i>
@@ -71,7 +71,7 @@ export default function ChatSideNav() {
           <DarkToggle />
         </div>
       </div>
-      <div ref={chatSubSideNavRef} className={`z-20 pt-18 darkTopNav hidden`} >
+      <div ref={chatSubSideNavRef} className={`easyonOff shadowBox z-20 pt-18 darkTopNav hidden`} >
         <ChatSelectContact />
       </div>
     </>

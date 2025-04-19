@@ -26,7 +26,7 @@ function Profile() {
 
   return (
     // bg-gray-100
-    <div className='flex justify-center items-center w-full h-full overflow-auto '>
+    <div className='easyonOff flex justify-center items-center w-full h-full overflow-auto '>
 
       <div className='cardBoxText shadowBox max-sm:w-65  w-80 p-6 rounded-lg shadow-lg flex flex-col items-center gap-5'>
         {/* Profile Picture */}

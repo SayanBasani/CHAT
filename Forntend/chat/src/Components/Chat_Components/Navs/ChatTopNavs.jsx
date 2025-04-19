@@ -62,7 +62,7 @@ export default function ChatTopNavs(params) {
         <div>
           <Link to={"/Profile"} className="relative">
             <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="w-10 h-10 rounded-sm profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
-            <span class={`absolute bottom-0 left-6 transform translate-y-1/4 w-3.5 h-3.5 ${socket?"bg-green-400":"bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
+            <span class={`absolute bottom-0 left-6 transform translate-y-1/4 w-3.5 h-3.5 ${(socket || socket.connected) ?"bg-green-400":"bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
             {/* <div className={`w-3 h-3 ${socket?"bg-green-400":"bg-red-600"}`}></div> */}
           </Link>
           {/* <Link to={"/Profile"}>
@@ -77,7 +77,7 @@ export default function ChatTopNavs(params) {
           }} className="bi bi-three-dots-vertical cursor-pointer"></button>
         </div>
       </nav>
-      <div ref={ChatNavDropdownMenuRef} className={`${chatNavDropdownval ? "" : "hidden"} z-30 ChatNavDropdown_div absolute top-14 right-10`}>
+      <div ref={ChatNavDropdownMenuRef} className={`${chatNavDropdownval ? "" : "hidden"} shadowBox easyonOff z-30 ChatNavDropdown_div absolute top-14 right-10`}>
         <ChatNavDropdown />
       </div>
     </>

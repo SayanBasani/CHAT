@@ -146,3 +146,26 @@ html.dark .cardBoxText{
   scale: 105%;
   border: 1px solid rgb(132,154,163);
 }
+
+.easyonOff {
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+@keyframes popupAnim {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
