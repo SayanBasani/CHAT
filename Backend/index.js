@@ -222,7 +222,7 @@ app.post("/deleteUser/", async (req, res) => {
 });
 
 app.post("/addContect/", async (req, res) => {
-  // console.log("this is addContect.--->", req.originalUrl);
+  console.log("this is addContect.--->", req.originalUrl);
   const { ContactEmail, ContactName, phoneNumber } = req.body;
   if (!ContactName || !phoneNumber) {
     return req.send({ message: "please provide The Fields", contectCreated: false });
@@ -235,9 +235,9 @@ app.post("/addContect/", async (req, res) => {
           phoneNumber: req.body.phoneNumber,
         },
       });
-
-      if (isExist.count > 0) {
-        console.log("the count is ->", isExist);
+      console.log("isExist--->",isExist),"<---";
+      if (isExist) {
+        console.log("the count is ->", isExist.count);
         isExist.Deleted = true;
         await isExist.save();
         return res.send({
