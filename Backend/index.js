@@ -158,7 +158,7 @@ app.post("/loginUser/", async (req, res) => {
         {
           httpOnly: true,
           secure: true,
-          sameSite: "Lax",
+          // sameSite: "Lax",
           sameSite: "None",
           path: "/",
           maxAge: 30 * 24 * 60 * 60 * 1000,
