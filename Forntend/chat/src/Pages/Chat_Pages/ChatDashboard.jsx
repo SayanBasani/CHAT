@@ -5,7 +5,7 @@ import Chat from "./Chat";
 import Contects from "./Contects";
 import Calls from "./Calls";
 import Setting from "./Setting";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AllStorage } from "../../Storage/StorageProvider";
 import TopNav from "../../Components/Navs/TopNav";
 import { checkIsUserValid, getUserData } from "../../Storage/ApiRequest";
@@ -13,28 +13,43 @@ import { SocketContext } from "../../Storage/Sockets";
 import Profile from "./Profile";
 import Theme from "./Settings/Theme";
 import ComingSoon from "../ComingSoon";
+import { OrbitProgress } from "react-loading-indicators";
 
 // import 
 
 export default function ChatDashboard(params) {
   const navigate = useNavigate();
-  const { userData, setuserData, userPData } = useContext(AllStorage);
+  const { userData, setuserData,userDataLoding, setuserDataLoding } = useContext(AllStorage);
   const { socket, setmessages } = useContext(SocketContext);
+  const [loadingreq, setloadingreq] = useState(false);
   const { phoneNumber } = useParams();
   // console.log("into ChatDashboard");
   useEffect(() => {
     ;;
     (
       async () => {
-        const response = await getUserData();
-        // console.log("response is --->", response);
-        if (response) {
-          setuserData(response)
-        } else {
-          navigate("/Login")
+        try {
+
+          const response = await getUserData();
+          setuserDataLoding(true)
+          // console.log("response is --->", response);
+          console.log("response is from chat dashbord");
+          if (response) {
+            setuserDataLoding(false)
+            setuserData(response);
+          } else {
+            
+            setuserDataLoding(false)
+            navigate("/Login")
+          }
+          console.log("response is from chat dashbord!!");
+        } catch (error) {
+          setuserDataLoding(false)
+          
         }
       }
     )();;
+    // setuserDataLoding(false);
   }, [])
 
   useEffect(() => {
@@ -42,7 +57,6 @@ export default function ChatDashboard(params) {
     (
       async (params) => {
         const checkIsUserResponse = await checkIsUserValid();
-        // console.log("checkIsUserResponse-->", checkIsUserResponse);
         if (checkIsUserResponse.isLogin) {
           navigate("/Login");
         }
@@ -75,7 +89,8 @@ export default function ChatDashboard(params) {
     }
     // socked related!
   }, [socket, userData])
-  if (userData.isLogin) {
+
+  if (userData && userData.isLogin) {
     return (
       <>
         <ChatTopNavs />
@@ -108,6 +123,9 @@ export default function ChatDashboard(params) {
   else {
     return (
       <>
+        <div className={` ${userDataLoding ? "" : "hidden"} grid w-full h-full backdrop-blur-sm absolute z-40 items-center justify-center `}>
+          <OrbitProgress color="var(--mainbar-bg)" size="medium" text="" textColor="" />
+        </div>
         <div className="">
           <TopNav />
           <div className="grid justify-center items-center gap-5">

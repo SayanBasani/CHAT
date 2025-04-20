@@ -56,7 +56,6 @@ app.use(
   checkUserIsLoginANDValid
 );
 app.use(["/getContactData/"], checkIsUser);
-// app.use(["/chat/"],InitializeSocketWithCredential);
 export const server = http.createServer(app);
 InitializeSocket(server);
 
@@ -84,14 +83,18 @@ app.get("/", async (req, res) => {
 
 app.post("/create/", async (req, res) => {
   console.log("create-------------------");
-  const {user_name, user_email, user_ph_no, user_password} = req.body;
+  const { user_name, user_email, user_ph_no, user_password } = req.body;
   // console.log(req.body);
   const hashedPassword = await bcrypt.hash(user_password, 10);
-  const data = {user_name, user_email, user_ph_no, user_password:hashedPassword}
-  console.log("data is -->",data,"pass-->",user_password);
+  const data = {
+    user_name,
+    user_email,
+    user_ph_no,
+    user_password: hashedPassword,
+  };
+  console.log("data is -->", data, "pass-->", user_password);
   try {
     const user = await User.create(data);
-    // console.log("...............");
     res.send({
       accout: {
         user_email: user.user_email,
@@ -100,29 +103,26 @@ app.post("/create/", async (req, res) => {
       user_email: user.user_email,
       user_ph_no: user.user_ph_no,
     });
-    // console.log("...............!");
-    // console.log("create-------------------!");
   } catch (error) {
-    // console.log(error.errors[0].message);
     res.send({
       "error message": error.errors[0].message,
-      // 'error':erro
     });
   }
 });
 
 app.post("/loginUser/", async (req, res) => {
-  // console.log(req.body);
   const { user_email, user_password } = req.body;
   if (!user_email || !user_password) {
     return res.status(400).json({ error: "Email and password are required!" });
   }
-  // try {
+  try {
     const user = await User.findOne({ where: { user_email } });
     // const user = await User.findOne({ where: { user_email, user_password } });
 
-    if (!user) { return res.status(404).json({ error: 'User not found' }); }
-    const isMatched = await bcrypt.compare(user_password ,user.user_password)
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const isMatched = await bcrypt.compare(user_password, user.user_password);
     if (isMatched) {
       console.log("this is a valied user -->", user);
       const _userData_ = {
@@ -183,10 +183,9 @@ app.post("/loginUser/", async (req, res) => {
     } else {
       res.status(401).json({ error: "Invalid email or password!" });
     }
-  // } catch (error) {
-  //   // console.error(error);
-  //   res.status(500).json({ error: "Internal Server Error" });
-  // }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.post("/logOutUser/", (req, res) => {
@@ -233,7 +232,10 @@ app.post("/addContect/", async (req, res) => {
   console.log("this is addContect.--->", req.originalUrl);
   const { ContactEmail, ContactName, phoneNumber } = req.body;
   if (!ContactName || !phoneNumber) {
-    return req.send({ message: "please provide The Fields", contectCreated: false });
+    return req.send({
+      message: "please provide The Fields",
+      contectCreated: false,
+    });
   }
   try {
     if (req.isUser) {
@@ -243,13 +245,13 @@ app.post("/addContect/", async (req, res) => {
           phoneNumber: req.body.phoneNumber,
         },
       });
-      console.log("isExist--->",isExist),"<---";
+      console.log("isExist--->", isExist), "<---";
       if (isExist) {
         console.log("the count is ->", isExist.count);
-        isExist.Deleted = true;
+        isExist.Deleted = false;
         await isExist.save();
         return res.send({
-          message: "Make it reexists",
+          message: "!! Successfully Created !!",
           error: "Already exists",
         });
         // return res.send({ message: "Already exists", error: "Already exists" });
@@ -352,19 +354,25 @@ app.delete("/deleteContect/", async (req, res) => {
     console.log("deletecontect ---------------------");
     const { phoneNumber } = req.body;
     if (!phoneNumber) {
-      return res.send({ message: "missng Phone Number",complet:false });
+      return res.send({ message: "missng Phone Number", complet: false });
     }
 
-    const contact = await Contact.findOne({ where: { phoneNumber ,Deleted: false } });
+    const contact = await Contact.findOne({
+      where: { phoneNumber, Deleted: false },
+    });
 
     if (!contact) {
-      return res.status(404).json({ message: "Contact not found" ,complet:false});
+      return res
+        .status(404)
+        .json({ message: "Contact not found", complet: false });
     }
     contact.Deleted = true;
-    console.log("contact-->",contact);
     await contact.save();
+    console.log("contact-->", contact);
 
-    return res.status(200).json({ message: "Contact is Sucessfully deleted",complet:true });
+    return res
+      .status(200)
+      .json({ message: "Contact is Sucessfully deleted", complet: true });
   } catch (error) {
     res.send({ message: "Server error", error });
   }

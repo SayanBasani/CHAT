@@ -4,7 +4,7 @@ import All_Contect_Preview from "../../Components/Contect_components/All_Contect
 
 export default function Contects(params) {
   return (<>
-    <div className="grid Contects h-full">
+    <div className="easyonOff grid Contects h-full">
       <div className="flex flex-col overflow-auto">
         <All_Contect_Preview />
       </div>

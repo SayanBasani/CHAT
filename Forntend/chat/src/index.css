@@ -12,6 +12,16 @@ html.dark body {
   color: var(--font-color);
 }
 
+html.dark .LodingColor {
+  color: var(--mainbar-bg);
+  /* color: white; */
+}
+.LodingColor {
+  /* color: var(--mainbar-bg); */
+  color: black;
+}
+
+
 html.dark .darkTopNav {
   background-color: var(--mainbar-bg);
   color: white;

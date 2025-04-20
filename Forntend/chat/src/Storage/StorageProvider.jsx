@@ -11,16 +11,27 @@ export default function StorageProvider({ children }) {
       .find(row => row.startsWith(name + "="))
       ?.split("=")[1] || null;
   }
-  const [userData, setuserData] = useState(async () => {});
-  const [allContectS, setallContectS] = useState(null);
-  const [chatSideNavwidth,setchatSideNavwidth]=useState(false);
-  const [messageLoading,setMessageLoading]=useState(false);
-  const [userPData,setuserPData]=useState(null);
-  const [_mainbarColor,setmainbarColor]=useState(null);
-  const [_bgColor,setbgColor]=useState(null);
-  const [_fontColor,setfontColor]=useState(null);
 
-  const chatSidebarOptions = [{ 'name': 'Chat', 'icon_name': 'bi-chat' },{ 'name': 'Contects', 'icon_name': 'bi-person' },{ 'name': 'Call', 'icon_name': 'bi-telephone' },]
+  const [userDataLoding, setuserDataLoding] = useState(false);
+  const [userData, setuserData] = useState(async () => {
+    const response = await getUserData();
+    console.log("response is from store",);
+    if (response) {
+      return response;
+    } else {
+      navigate("/Login")
+    }
+    console.log("response is from store!!");
+  });
+  const [allContectS, setallContectS] = useState(null);
+  const [chatSideNavwidth, setchatSideNavwidth] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
+  const [userPData, setuserPData] = useState(null);
+  const [_mainbarColor, setmainbarColor] = useState(null);
+  const [_bgColor, setbgColor] = useState(null);
+  const [_fontColor, setfontColor] = useState(null);
+
+  const chatSidebarOptions = [{ 'name': 'Chat', 'icon_name': 'bi-chat' }, { 'name': 'Contects', 'icon_name': 'bi-person' }, { 'name': 'Call', 'icon_name': 'bi-telephone' },]
 
   useEffect(() => {
     ;; (async () => {
@@ -39,33 +50,37 @@ export default function StorageProvider({ children }) {
     })();;
   }, [, userData])
 
-  useEffect(()=>{
-    setmainbarColor(()=>{
+  useEffect(() => {
+    setmainbarColor(() => {
       return localStorage.getItem("mainbarColor")
     });
-    setbgColor(()=>{
+    setbgColor(() => {
       return localStorage.getItem("bgColor")
     });
-  },[])
+  }, [])
+
   useEffect(() => {
-    console.log("changed color is :->",_mainbarColor);
+    console.log("changed color is :->", _mainbarColor);
     document.documentElement.style.setProperty('--mainbar-bg', _mainbarColor);
   }, [_mainbarColor]);
+
   useEffect(() => {
-    console.log("changed color is :->",_bgColor);
+    console.log("changed color is :->", _bgColor);
     document.documentElement.style.setProperty('--body-bg', _bgColor);
   }, [_bgColor]);
+
   useEffect(() => {
-    console.log("text color is :->",_fontColor);
+    console.log("text color is :->", _fontColor);
     document.documentElement.style.setProperty('--font-color', _fontColor);
   }, [_fontColor]);
-  
+
+
   return (
     <AllStorage.Provider value={{
       userData, setuserData, chatSidebarOptions, allContectS, setallContectS,
-      chatSideNavwidth,setchatSideNavwidth,messageLoading,setMessageLoading,
-      userPData,setuserPData,_bgColor,setbgColor,_mainbarColor,setmainbarColor,
-      _fontColor,setfontColor,
+      chatSideNavwidth, setchatSideNavwidth, messageLoading, setMessageLoading,
+      userPData, setuserPData, _bgColor, setbgColor, _mainbarColor, setmainbarColor,
+      _fontColor, setfontColor,userDataLoding, setuserDataLoding
     }}>
       {children}
     </AllStorage.Provider>

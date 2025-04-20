@@ -59,11 +59,10 @@ const rout = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <StorageProvider>
       <SocketProvider>
         <RouterProvider router={rout}></RouterProvider>
       </SocketProvider>
     </StorageProvider>
-  </StrictMode>,
+  ,
 )

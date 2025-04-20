@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import { AllStorage } from "../../Storage/StorageProvider";
 import { loginUser } from "../../Storage/Account";
-import { Mosaic } from "react-loading-indicators"
+import { Slab,ThreeDot,Mosaic } from "react-loading-indicators"
 export default function Login(params) {
   const [reqLoginlogin, setreqLoginlogin] = useState(false)
   // console.log('from login --> ', localStorage.getItem('user'));
@@ -14,6 +14,7 @@ export default function Login(params) {
   const { setuserData } = useContext(AllStorage);
   const onSubmit = async (data) => {
     setreqLoginlogin(true);
+    console.log(data);
     const response = await loginUser(data)
 
     if (response.error) {
@@ -40,7 +41,9 @@ export default function Login(params) {
       <div className="">
         <TopNav />
         <div className={`${reqLoginlogin ? "grid" : "hidden"} backdrop-blur-sm absolute w-screen h-screen z-40 items-center justify-center `}>
-          <Mosaic color="rgb(15, 191, 255)" size="medium" text="" textColor="" />
+          {/* <Mosaic color="var(--mainbar-bg)" size="medium" text="" textColor="" /> */}
+          <ThreeDot color="var(--mainbar-bg)" size="medium" text="" textColor="" />
+          {/* <Slab color="var(--mainbar-bg)" size="medium" text="" textColor="" /> */}
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="darkExtraPage m-auto mt-40 grid w-80 max-sm:w-60 max-sm:p-5 p-10 bg-gray-100 rounded-2xl gap-5">
 

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { getAllMessagesBW_S_R, getContactData, getMessagesF } from "../../Storage/ApiRequest";
 import { SocketContext } from "../../Storage/Sockets";
 import { AllStorage } from "../../Storage/StorageProvider";
+import { OrbitProgress } from "react-loading-indicators";
 export default function Chat(params) {
   const { messages, setmessages, socket, trackOnline, settrackOnline } = useContext(SocketContext);
   const { messageLoading, setMessageLoading } = useContext(AllStorage);
@@ -13,6 +14,7 @@ export default function Chat(params) {
   const [isActiveUser, setisActiveUser] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isOnline, setisOnline] = useState(false);
+  const [loadingreq, setloadingreq] = useState(false);
 
 
 
@@ -53,24 +55,28 @@ export default function Chat(params) {
   useEffect(() => { console.log(messages); }, [messages])
 
   useEffect(() => {
+    setloadingreq(false);
     console.log("phoneNumber -->", phoneNumber);
     const fetchContactData = async () => {
       if (!phoneNumber) {
         return;
       }
       try {
+        setloadingreq(true);
         const response = await getContactData({ phoneNumber });
         if (!response) {
+          setloadingreq(false);
           console.error("somthing Wrong!");
         }
-        // console.log("response --->", response);
-        // console.log(response.isActiveUser);
+        setloadingreq(false);
         setisActiveUser(response.isActiveUser);
         setchatingWith(response);
         loadMessages();
       } catch (err) {
+        setloadingreq(false);
         console.error("Error fetching contact data:", err);
       }
+      setloadingreq(false);
     };
 
     fetchContactData();
@@ -126,13 +132,21 @@ export default function Chat(params) {
       socket.off(`${phoneNumber}`, handleStatusUpdate);
     };
   }, [socket, phoneNumber]);
+  useEffect(() => {
+    console.log("phoneNumber--->", phoneNumber,`// isActiveUser --> ${isActiveUser} --chatingWith--> ${chatingWith}`,(!isActiveUser && chatingWith));
+  }, [phoneNumber]);
 
 
-  // useEffect(()=>{
-  //   console.log("isOnline--->",isOnline);
-  // })
+  useEffect(() => {
+    if(!phoneNumber){setloadingreq(false);}
+    //   console.log("isOnline--->",isOnline);
+  })
   return (<>
-    <main className="grid grid-rows-[50px_1fr_55px] h-full">
+    <div className={` ${loadingreq ? "" : "hidden"} grid w-full h-full backdrop-blur-sm absolute z-40 items-center justify-center `}>
+      <OrbitProgress color="var(--mainbar-bg)" size="medium" text="" textColor="" />
+    </div>
+    <main className="easyonOff grid grid-rows-[50px_1fr_55px] h-full">
+
       {
         (isActiveUser && phoneNumber) ?
           (
@@ -140,7 +154,7 @@ export default function Chat(params) {
               <nav className="px-2 justify-center items-center chatSubNav grid grid-cols-[50px_1fr_20px]">
                 <span className="relative">
                   <i className="w-10 h-10 rounded-full bi bi-person-circle text-2xl"></i>
-                  <span class={`absolute bottom-0 left-5 transform translate-y-1/4 w-3.5 h-3.5 ${isOnline.isOnline?"bg-green-400":"bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
+                  <span class={`absolute bottom-0 left-5 transform translate-y-1/4 w-3.5 h-3.5 ${isOnline.isOnline ? "bg-green-400" : "bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
                 </span>
                 <div className="grid">
                   <span className="">{chatingWith.user_name}</span>
@@ -173,7 +187,7 @@ export default function Chat(params) {
             <>
               {(!isActiveUser && chatingWith) ?
                 <>
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                  <div className="easyonOff flex items-center justify-center h-full text-gray-500">
                     Invite
                   </div>
                 </>
