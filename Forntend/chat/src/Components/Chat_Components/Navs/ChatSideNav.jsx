@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import ChatSelectContact from "./ChatSelectContact";
 
 export default function ChatSideNav() {
-  const { chatSideNavwidth } = useContext(AllStorage);
+  const { chatSideNavwidth,setchatSideNavwidth } = useContext(AllStorage);
   const chatContactRef = useRef();
   const chatCallRef = useRef();
   const chatMessageRef = useRef();
@@ -27,28 +27,34 @@ export default function ChatSideNav() {
       document.removeEventListener("click", handleSubSideNavONOFF);
     };
   }, []);
-
   const handleSubSideNavONOFF = (event) => {
+    const listBtn = document.querySelector(".listBtn");
     // console.log("the prevclick is ->", prevclick, "---", prevclickRef);
 
     if (chatMessageRef.current && chatMessageRef.current.contains(event.target)) {
       setprevclick(event.target);
       if (prevclickRef.current && chatMessageRef.current.contains(prevclickRef.current)) {
-        chatSubSideNavRef.current.classList.toggle("hidden")
+        chatSubSideNavRef.current.classList.toggle("hidden");
+        setchatSideNavwidth(false);
       }
     } else if (chatCallRef.current && chatCallRef.current.contains(event.target)) {
       setprevclick(event.target)
       if (prevclickRef.current && chatCallRef.current.contains(prevclickRef.current)) {
         chatSubSideNavRef.current.classList.toggle("hidden")
+        setchatSideNavwidth(false)
       }
-    } else {
+    } else if(listBtn.contains(event.target)){
+      return;
+    } 
+    else {
       chatSubSideNavRef.current.classList.add("hidden");
+      setchatSideNavwidth(false)
     }
   };
 
   return (
     <>
-      <div className={`${chatSideNavwidth ? "w-40" : "w-14"} z-10 pt-18 h-screen w-14 darkTopNav flex flex-col gap-y-3 p-4 overflow-hidden`}
+      <div className={`${chatSideNavwidth ? "w-40" : "w-14"} easyonOff z-10 pt-18 h-screen w-14 darkTopNav flex flex-col gap-y-3 p-4 overflow-hidden`}
       >
         <NavLink ref={chatMessageRef} to={"/chat/"} className={({ isActive }) => `${isActive ? "text-blue-500" : ""} flex gap-4 items-center`} >
           <i className="bi bi-chat text-2xl"></i>

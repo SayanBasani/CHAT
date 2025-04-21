@@ -8,7 +8,7 @@ export default function ChatTopNavs(params) {
   const ChatNavDropdownBtnRef = useRef();
   const [chatNavDropdownval, setchatNavDropdownval] = useState(false);
   const { userData, chatSideNavwidth, setchatSideNavwidth } = useContext(AllStorage);
-  const {socket} = useContext(SocketContext);
+  const {socket,isSocket} = useContext(SocketContext);
   const handleDropDown = () => {
     setchatNavDropdownval((prev) => !prev)
   }
@@ -53,7 +53,7 @@ export default function ChatTopNavs(params) {
         <div>
           <button onClick={(e) => {
             handleChatSideNav(e);
-          }} className="bi bi-list text-2xl"></button>
+          }} className="bi bi-list text-2xl listBtn"></button>
         </div>
         <div className="m-auto w-full flex items-center justify-center"> {/* chat search bar */}
           <input className="h-8 border-l-[1.5px] border-y rounded-l-lg px-4 py-1 w-[70%] max-w-[550px]" placeholder="Search" type="text" />
@@ -62,7 +62,7 @@ export default function ChatTopNavs(params) {
         <div>
           <Link to={"/Profile"} className="relative">
             <button title={`${userData.user_ph_no}`} onClick={handleYourProfileBtn} className="w-10 h-10 rounded-sm profile_btn bi bi-person-circle text-2xl cursor-pointer"></button>
-            <span class={`absolute bottom-0 left-6 transform translate-y-1/4 w-3.5 h-3.5 ${(socket || socket.connected) ?"bg-green-400":"bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
+            <span class={`absolute bottom-0 left-6 transform translate-y-1/4 w-3.5 h-3.5 ${(isSocket != null && socket.connected!=false ) ?"bg-green-400":"bg-red-600"} border-2 border-white dark:border-gray-800 rounded-full`}></span>
             {/* <div className={`w-3 h-3 ${socket?"bg-green-400":"bg-red-600"}`}></div> */}
           </Link>
           {/* <Link to={"/Profile"}>

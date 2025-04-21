@@ -67,7 +67,7 @@ function Theme() {
   return (
     <div className='w-full h-full p-4 gap-3'>
       {/* <span className='text-3xl font-semibold flex items-center'> Theme </span> */}
-      <div className='fixed flex gap-3 items-center z-50'>
+      <div className='flex gap-3 items-center z-50'>
         <span className='text-3xl font-semibold flex items-center'> Custom theme </span>
         <span className='text-2xl font-semibold flex items-center'> 
           {/* <Switch defaultValue={switchChecked} defaultChecked={switchChecked} onChange={handleChange} checked={switchChecked} /> </span> */}

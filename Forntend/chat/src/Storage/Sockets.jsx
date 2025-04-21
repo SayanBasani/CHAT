@@ -35,6 +35,7 @@ export const socketConnReq = (data) => {
 
     socket.on("connect_error", (err) => {
       console.error("Socket connection error:", err);
+      return null;
     });
     return socket;
   } catch (error) {
@@ -46,23 +47,32 @@ export default function SocketProvider({ children }) {
   // const { phoneNumber } = useParams();
   const { userData,allContectS, setallContectS } = useContext(AllStorage);
   const [socket, setsocket] = useState(null);
+  const [isSocket, setisSocket] = useState(null);
 
   useEffect(() => {
     let socketInstance;
     if (userData) {
       socketInstance = socketConnReq(userData);
+      if(socketInstance === null ){
+        setisSocket(false);
+        return;
+      }
       if (socketInstance) {
         socketInstance.on("connect", () => {
           console.log(`socket id --> ${socketInstance.id}`);
         })
         setsocket(socketInstance);
+        setisSocket(socketInstance);
       }
       else {
         console.error("Failed to initialize socket.");
+        setsocket(null);
+        setisSocket(false);
       }
     } else {
       // console.log("for socket you have to login");
       setsocket(null);
+      setisSocket(false);
     }
     return () => {
       if (socketInstance) {
@@ -71,17 +81,21 @@ export default function SocketProvider({ children }) {
         console.log("Socket disconnected");
       }
       setsocket(null);
+      setisSocket(false);
     };
   }, [userData]);
   // register for he is online
   useEffect(() => {
     if (socket) {
+      setisSocket(true);
       const ph_Number  = userData?.user_ph_no; // Replace with your actual logic
       if (ph_Number) {
         setInterval(()=>{
           socket.emit("register_for_online", { "phoneNumber":ph_Number });
         },5000)
       }
+    }else{
+      setisSocket(false);
     }
   }, [socket,userData]);
 
@@ -133,8 +147,12 @@ export default function SocketProvider({ children }) {
   //     socket?console.log("socket.connected-->",socket.connected):console.log("socket->>",socket);
   //   }, 4000);
   // })
+
+  useEffect(()=>{
+    console.log("socket-->",socket);
+  },[socket])
   return (
-    <SocketContext.Provider value={{ socket, messages, setmessages,trackOnline,settrackOnline }}>
+    <SocketContext.Provider value={{ socket, messages, setmessages,trackOnline,settrackOnline,isSocket, setisSocket }}>
       {children}
     </SocketContext.Provider>
   )

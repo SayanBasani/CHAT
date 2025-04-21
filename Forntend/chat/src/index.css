@@ -24,7 +24,8 @@ html.dark .LodingColor {
 
 html.dark .darkTopNav {
   background-color: var(--mainbar-bg);
-  color: white;
+  /* color: white; */
+  color: var(--font-color);
 }
 /* End {for dinamicly change the theme color}!! */
 
@@ -59,7 +60,7 @@ html.dark .darkSubSideNav {
   color: black;
 }
 html.dark .darkExtraPage {
-  background-color: rgb(12, 10, 36);
+  background-color: var(--mainbar-bg);
   color: white;
 }
 .chatSubNav {

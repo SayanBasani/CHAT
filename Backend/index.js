@@ -111,6 +111,7 @@ app.post("/create/", async (req, res) => {
 });
 
 app.post("/loginUser/", async (req, res) => {
+  console.log("Login req -->",req.body);
   const { user_email, user_password } = req.body;
   if (!user_email || !user_password) {
     return res.status(400).json({ error: "Email and password are required!" });
