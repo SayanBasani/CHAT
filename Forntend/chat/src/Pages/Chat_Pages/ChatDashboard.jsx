@@ -108,7 +108,8 @@ export default function ChatDashboard(params) {
                     <Route path="/Chat/" element={<Chat />} />
                 }
                 <Route path="/Contects/" element={<Contects />} />
-                <Route path="/Calls/" element={<Calls />} />
+                <Route path="/Calls/" element={<ComingSoon />} />
+                {/* <Route path="/Calls/" element={<Calls />} /> */}
                 <Route path="/Profile/" element={<Profile />} />
                 <Route path="/Setting/" element={<Setting />} />
                 <Route path="/Theme/" element={<Theme />} />

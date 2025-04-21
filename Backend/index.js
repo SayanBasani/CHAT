@@ -52,6 +52,7 @@ app.use(
     "/getUserData/",
     "/updateUserData/",
     "/deleteContect/",
+    "/getAllChatContacts/",
   ],
   checkUserIsLoginANDValid
 );
@@ -111,7 +112,7 @@ app.post("/create/", async (req, res) => {
 });
 
 app.post("/loginUser/", async (req, res) => {
-  console.log("Login req -->",req.body);
+  console.log("Login req -->", req.body);
   const { user_email, user_password } = req.body;
   if (!user_email || !user_password) {
     return res.status(400).json({ error: "Email and password are required!" });
@@ -540,6 +541,65 @@ app.put("/updateUserData/", async (req, res) => {
   } catch (error) {
     // console.error(error);
     return res.send({ message: "Internal server Error!", update: false });
+  }
+});
+
+// import { sequelize } from "./DB.js";
+import { QueryTypes } from "sequelize";
+
+app.post("/getAllChatContacts", async (req, res) => {
+  try {
+    const userId = req.isUser?.user_id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const recentChats = await sequelize.query(
+      `
+      SELECT 
+        CASE 
+          WHEN sender_id = :userId THEN receiver_id
+          ELSE sender_id
+        END AS contact_id,
+        MAX(send_time) AS last_message_time
+      FROM Messages
+      WHERE sender_id = :userId OR receiver_id = :userId
+      GROUP BY contact_id
+      ORDER BY last_message_time DESC;
+    `,
+      {
+        replacements: { userId },
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    // Get contact details from User table
+    const contactIds = recentChats.map((c) => c.contact_id);
+    const contactDetails = await User.findAll({
+      where: {
+        user_id: { [Op.in]: contactIds },
+      },
+      attributes: ["user_id", "user_name", "user_email", "user_ph_no"],
+    });
+
+    // Merge messages with contact info
+    const formattedContacts = recentChats.map((chat) => {
+      const user = contactDetails.find((u) => u.user_id === chat.contact_id);
+      return {
+        contactId: chat.contact_id,
+        lastMessageTime: chat.last_message_time,
+        contactDetails: user || null,
+      };
+    });
+
+    res.json({
+      message: "Contacts retrieved successfully",
+      contacts: formattedContacts,
+    });
+  } catch (error) {
+    console.error("Error fetching chat contacts:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

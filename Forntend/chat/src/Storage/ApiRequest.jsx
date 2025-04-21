@@ -139,3 +139,24 @@ export const deleteUserContect = async(data) => {
     return 0;
   }
 }
+
+export const getAllChatContacts = async () => { // from gpt
+  try {
+    const response = await fetch(`${API_BASE_URL}getAllChatContacts/`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return { error: true, message: "Failed to fetch chat contacts" };
+    }
+
+    const responseData = await response.json();
+    return responseData; // Return the list of contacts
+  } catch (error) {
+    console.error("Error fetching chat contacts:", error);
+    return { error: true, message: "An error occurred while fetching chat contacts" };
+  }
+};
