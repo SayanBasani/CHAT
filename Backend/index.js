@@ -31,9 +31,23 @@ const app = express();
 export const ACCESS_SECRET = "access123";
 export const REFRESH_SECRET = "refresh123";
 app.use(express.json());
+// app.use(
+//   cors({
+//     origin: FORNTEND_BASE_URL,
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//   })
+// );
 app.use(
   cors({
-    origin: FORNTEND_BASE_URL,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (FORNTEND_BASE_URL.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
